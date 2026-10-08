@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="zh-MY">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>华文大冒险：UASA 026 勇者试炼 (All-Blank & 7-Word Wheel Edition)</title>
+<style>
+  /* ==========================================================================
+     JRPG CLASSROOM SMARTBOARD ENGINE (HIGH CONTRAST / HIGH MYOPIA ACCESSIBILITY)
+     ========================================================================== */
+  :root {
+    --bg-main: #060913;
+    --bg-card: #0f172a;
+    --border-gold: #f59e0b;
+    --neon-blue: #38bdf8;
+    --neon-green: #22c55e;
+    --neon-red: #ef4444;
+    --neon-yellow: #fde047;
+    --text-pure: #ffffff;
+    --text-sub: #cbd5e1;
+    --font-scale: 1.05;
+    --touch-radius: 18px;
+    --shadow-epic: 0 10px 30px -5px rgba(0, 0, 0, 0.8), 0 0 25px rgba(56, 189, 248, 0.25);
+  }
+
+  *, *::before, *::after {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #060913 100%);
+    color: var(--text-pure);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
+    font-size: calc(18px * var(--font-scale));
+  }
+
+  #game-app {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    padding: 12px 20px;
+    position: relative;
+  }
+
+  /* SCREEN SHAKE ON VERIFICATION REJECTION */
+  body.screen-blast-shake {
+    animation: screenGlitch 0.6s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  @keyframes screenGlitch {
+    10%, 90% { transform: translate3d(-8px, 0, 0) rotate(-0.8deg); }
+    20%, 80% { transform: translate3d(10px, 0, 0) rotate(1deg); }
+    30%, 50%, 70% { transform: translate3d(-12px, 0, 0) rotate(-1.2deg); }
+    40%, 60% { transform: translate3d(12px, 0, 0) rotate(1.2deg); }
+  }
+
+  /* ==========================================================================
+     TOP HUD
+     ========================================================================== */
+  .hud-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.92);
+    border: 3px solid #334155;
+    border-radius: var(--touch-radius);
+    padding: 8px 18px;
+    box-shadow: var(--shadow-epic);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+  }
+
+  .hud-hero {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .hero-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border: 3px solid #fde047;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.7);
+  }
+
+  .hud-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stage-badge {
+    font-size: 1.15rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--neon-yellow);
+    text-shadow: 0 0 10px rgba(253, 224, 71, 0.6);
+  }
+
+  .exp-track {
+    width: 200px;
+    height: 14px;
+    background: #1e293b;
+    border-radius: 7px;
+    overflow: hidden;
+    border: 1px solid #475569;
+  }
+
+  .exp-fill {
+    height: 100%;
+    width: 10%;
+    background: linear-gradient(90deg, #38bdf8, #22c55e);
+    transition: width 0.4s ease;
+  }
+
+  .hud-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .smart-btn {
+    background: #1e293b;
+    border: 2px solid #475569;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.1s, background 0.2s, border-color 0.2s;
+    min-height: 50px;
+  }
+
+  .smart-btn:hover { border-color: var(--neon-blue); background: #334155; }
+  .smart-btn:active { transform: scale(0.95); }
+  .smart-btn.primary { background: linear-gradient(135deg, #2563eb, #1d4ed8); border-color: #60a5fa; }
+  .smart-btn.gold { background: linear-gradient(135deg, #d97706, #b45309); border-color: #fbbf24; }
+
+  /* ==========================================================================
+     ARENA VIEWPORT
+     ========================================================================== */
+  .arena-viewport {
+    flex: 1;
+    margin: 12px 0;
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: rgba(15, 23, 42, 0.85);
+    border: 3px solid #334155;
+    border-radius: 22px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
+  }
+
+  /* PACER STAGE (PASSAGE READING) */
+  .reading-quest-card {
+    width: 100%;
+    max-width: 1200px;
+    background: #0b1120;
+    border: 3px solid var(--border-gold);
+    border-radius: 26px;
+    padding: 28px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.25);
+  }
+
+  .reading-meta-tag {
+    position: absolute;
+    top: -18px;
+    background: linear-gradient(90deg, #d97706, #f59e0b);
+    color: #000;
+    font-weight: 900;
+    padding: 6px 24px;
+    border-radius: 20px;
+    font-size: 1.05rem;
+    letter-spacing: 1px;
+  }
+
+  .sentence-screen {
+    min-height: 180px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 8px 12px;
+    margin: 28px 0 20px 0;
+    padding: 16px;
+    position: relative;
+    width: 100%;
+  }
+
+  .char-token {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: calc(2.4rem * var(--font-scale));
+    font-weight: 800;
+    color: #f8fafc;
+    padding: 4px 6px;
+    border-radius: 10px;
+    transition: all 0.15s;
+    position: relative;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.8);
+  }
+
+  .char-token.punctuation { color: var(--neon-blue); padding: 0 2px; }
+  .char-token.active-pop {
+    color: #000 !important;
+    background: var(--neon-yellow) !important;
+    transform: scale(1.35) translateY(-8px);
+    border-radius: 12px;
+    box-shadow: 0 0 25px var(--neon-yellow);
+    z-index: 20;
+  }
+
+  #bookworm-pacer {
+    position: absolute;
+    width: 86px;
+    height: 86px;
+    pointer-events: none;
+    z-index: 40;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    top: 0;
+    left: 0;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+  }
+
+  /* ==========================================================================
+     ALL-BLANK SENTENCE ENGINE (EVERY 2-3 CHAR WORD & PUNCTUATION IS A BLANK)
+     ========================================================================== */
+  .cloze-quest-card {
+    width: 100%;
+    max-width: 1300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .cloze-header {
+    width: 100%;
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+    border-left: 8px solid var(--neon-yellow);
+    padding: 16px 24px;
+    border-radius: 0 18px 18px 0;
+    font-size: calc(1.3rem * var(--font-scale));
+    font-weight: bold;
+    line-height: 1.5;
+  }
+
+  .cloze-sentence-display {
+    width: 100%;
+    background: #0b1120;
+    border: 3px solid #334155;
+    border-radius: 24px;
+    padding: 30px 24px;
+    box-shadow: 0 0 35px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px 8px;
+    line-height: 2.4;
+  }
+
+  /* INDIVIDUAL BLANK SLOTS */
+  .blank-slot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 62px;
+    padding: 0 14px;
+    background: #1e293b;
+    border: 3px dashed var(--neon-blue);
+    border-radius: 16px;
+    color: var(--neon-yellow);
+    font-size: calc(1.4rem * var(--font-scale));
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+    position: relative;
+  }
+
+  /* Distinction between 2-3 char words and punctuation blanks */
+  .blank-slot.word-slot {
+    min-width: 110px;
+  }
+
+  .blank-slot.punct-slot {
+    min-width: 58px;
+    padding: 0 8px;
+    border-color: #a855f7;
+    background: #18112c;
+  }
+
+  .blank-slot.filled {
+    border-style: solid;
+    border-color: var(--neon-yellow);
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: #ffffff;
+    box-shadow: 0 0 18px rgba(253, 224, 71, 0.45);
+  }
+
+  .blank-slot:hover {
+    transform: scale(1.08);
+    border-color: #fde047;
+    z-index: 10;
+  }
+
+  .blank-slot:active {
+    transform: scale(0.95);
+  }
+
+  /* STRIKING REJECTION / SHATTER ANIMATION (WHEN INCORRECT) */
+  .blank-slot.shatter-rejection, .word-chip.shatter-rejection {
+    animation: blastError 0.9s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+    background: #7f1d1d !important;
+    border-color: #ef4444 !important;
+    border-style: solid !important;
+    color: #ffffff !important;
+  }
+
+  @keyframes blastError {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 rgba(239, 68, 68, 0);
+    }
+    20% {
+      transform: scale(1.22) rotate(-5deg);
+      box-shadow: 0 0 50px 18px #ef4444, inset 0 0 20px #dc2626;
+      border-color: #fca5a5;
+    }
+    40% {
+      transform: scale(1.18) rotate(5deg);
+      box-shadow: 0 0 45px 14px #dc2626;
+    }
+    60% {
+      transform: scale(1.1) rotate(-3deg);
+    }
+    80% {
+      transform: scale(0.92);
+      opacity: 0.85;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+      border-color: #ef4444;
+      box-shadow: 0 0 25px rgba(239, 68, 68, 0.85);
+    }
+  }
+
+  /* SUCCESS PULSE */
+  .blank-slot.success-pulse, .word-chip.success-pulse {
+    background: linear-gradient(135deg, #15803d, #166534) !important;
+    border-color: #4ade80 !important;
+    border-style: solid !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 30px #22c55e !important;
+    animation: pulseWin 0.6s ease;
+  }
+
+  @keyframes pulseWin {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  /* VERIFY ACTION BAR */
+  .verify-zone {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+  }
+
+  .verify-btn {
+    min-width: 280px;
+    height: 72px;
+    font-size: calc(1.4rem * var(--font-scale));
+    font-weight: 900;
+    border-radius: 20px;
+    border: 3px solid #fbbf24;
+    background: linear-gradient(135deg, #d97706, #b45309);
+    color: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: all 0.2s;
+  }
+
+  .verify-btn:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.85);
+  }
+
+  .verify-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* ==========================================================================
+     REARRANGING WORD BLOCKS (BAHAGIAN D ENGINE)
+     ========================================================================== */
+  .reorder-quest-card {
+    width: 100%;
+    max-width: 1260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .reorder-header {
+    width: 100%;
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+    border-left: 8px solid var(--neon-yellow);
+    padding: 16px 24px;
+    border-radius: 0 18px 18px 0;
+    font-size: calc(1.25rem * var(--font-scale));
+    font-weight: bold;
+    line-height: 1.5;
+  }
+
+  .reorder-zone-title {
+    font-size: 1.05rem;
+    color: var(--neon-yellow);
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reorder-target-zone {
+    width: 100%;
+    min-height: 120px;
+    background: #070d1e;
+    border: 3px dashed var(--neon-yellow);
+    border-radius: 22px;
+    padding: 18px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 12px 10px;
+    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.8);
+  }
+
+  .reorder-target-zone.empty-tip::before {
+    content: "👆 请点击下方备选词块，依正确语序装填至此处组句...";
+    color: #64748b;
+    font-size: 1.15rem;
+    font-weight: bold;
+    font-style: italic;
+  }
+
+  .reorder-pool-zone {
+    width: 100%;
+    min-height: 100px;
+    background: #0b1120;
+    border: 3px solid #334155;
+    border-radius: 22px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px 10px;
+  }
+
+  .word-chip {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 3px solid #64748b;
+    border-radius: 16px;
+    color: #ffffff;
+    font-size: calc(1.35rem * var(--font-scale));
+    font-weight: 800;
+    padding: 10px 18px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5);
+    transition: all 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+  }
+
+  .word-chip:hover {
+    border-color: var(--neon-blue);
+    background: #1e3a8a;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+  }
+
+  .word-chip:active {
+    transform: scale(0.95);
+  }
+
+  .word-chip.placed {
+    border-color: var(--neon-yellow);
+    background: linear-gradient(135deg, #1e3a8a, #172554);
+    box-shadow: 0 0 16px rgba(253, 224, 71, 0.35);
+  }
+
+  /* ==========================================================================
+     ROTATING WHEEL OF 7 WORD BLOCKS MODAL
+     ========================================================================== */
+  .wheel-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(3, 7, 18, 0.88);
+    backdrop-filter: blur(14px);
+    z-index: 300;
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .wheel-chassis {
+    width: 640px;
+    height: 640px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .wheel-spinner-ring {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    border: 4px dashed rgba(56, 189, 248, 0.6);
+    box-shadow: 0 0 45px rgba(56, 189, 248, 0.25);
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  /* 7 WORD BLOCKS RADIAL PLACEMENT */
+  .wheel-word-node {
+    position: absolute;
+    min-width: 140px;
+    min-height: 66px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    border: 3px solid #64748b;
+    border-radius: 18px;
+    color: #ffffff;
+    font-size: calc(1.25rem * var(--font-scale));
+    font-weight: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8px 14px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
+    margin-left: -70px;
+    margin-top: -33px;
+    line-height: 1.35;
+  }
+
+  .wheel-word-node:hover {
+    border-color: var(--neon-yellow);
+    background: #1e3a8a;
+    transform: scale(1.15) !important;
+    z-index: 50;
+    box-shadow: 0 0 25px var(--neon-yellow);
+  }
+
+  .wheel-word-node:active {
+    transform: scale(0.95) !important;
+  }
+
+  .wheel-center-hub {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #1e293b 40%, #0f172a 100%);
+    border: 5px solid var(--border-gold);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.6);
+    z-index: 40;
+    cursor: pointer;
+    padding: 10px;
+  }
+
+  .wheel-center-hub:hover {
+    transform: scale(1.06);
+  }
+
+  .wheel-controls-bar {
+    position: absolute;
+    bottom: 25px;
+    display: flex;
+    gap: 16px;
+    z-index: 40;
+  }
+
+  /* ==========================================================================
+     BAHAGIAN A (MCQ ARENA)
+     ========================================================================== */
+  .minigame-card {
+    width: 100%;
+    max-width: 1100px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .battle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 10px;
+  }
+
+  .battle-option-card {
+    background: #1e293b;
+    border: 3px solid #334155;
+    border-radius: 18px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-height: 76px;
+  }
+
+  .battle-option-card:hover {
+    border-color: var(--neon-blue);
+    background: #27354f;
+    box-shadow: 0 0 18px rgba(56, 189, 248, 0.4);
+  }
+
+  .battle-option-card:active { transform: scale(0.96); }
+
+  .option-badge-jrpg {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #0f172a;
+    border: 2px solid var(--neon-blue);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: 900;
+    color: var(--neon-blue);
+    flex-shrink: 0;
+  }
+
+  .option-text-jrpg {
+    font-size: calc(1.25rem * var(--font-scale));
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.4;
+  }
+
+  /* ==========================================================================
+     BOTTOM CONTROLLER BAR
+     ========================================================================== */
+  .footer-controller {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(15, 23, 42, 0.92);
+    border: 3px solid #334155;
+    border-radius: var(--touch-radius);
+    padding: 10px 20px;
+    box-shadow: var(--shadow-epic);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+  }
+
+  .nav-btn {
+    min-width: 150px;
+    height: 56px;
+    font-size: calc(1.15rem * var(--font-scale));
+    font-weight: 900;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+    color: #fff;
+  }
+
+  .nav-btn.prev-btn { background: #334155; border-color: #64748b; }
+  .nav-btn.prev-btn:hover { background: #475569; }
+
+  .nav-btn.next-btn {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    border-color: #60a5fa;
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+  }
+  .nav-btn.next-btn:hover { transform: scale(1.03); }
+
+  .nav-btn.menu-btn {
+    background: linear-gradient(135deg, #059669, #047857);
+    border-color: #34d399;
+  }
+
+  /* TOAST BANNER */
+  #game-toast {
+    position: fixed;
+    top: 86px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30px);
+    background: #1e1b4b;
+    border: 3px solid var(--neon-yellow);
+    border-radius: 16px;
+    padding: 12px 30px;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #fff;
+    box-shadow: 0 0 35px rgba(253, 224, 71, 0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 500;
+  }
+
+  #game-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  /* WARP / LEVEL SELECT MODAL */
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.88);
+    backdrop-filter: blur(14px);
+    z-index: 400;
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-panel {
+    width: 90vw;
+    max-width: 1100px;
+    max-height: 86vh;
+    background: #0b1120;
+    border: 4px solid var(--border-gold);
+    border-radius: 28px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 50px rgba(245, 158, 11, 0.4);
+  }
+
+  .quest-grid {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 14px;
+    padding: 10px;
+  }
+
+  .warp-tile {
+    background: #1e293b;
+    border: 3px solid #334155;
+    border-radius: 16px;
+    padding: 16px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .warp-tile:hover {
+    border-color: var(--neon-blue);
+    transform: translateY(-4px);
+    background: #2d3b55;
+  }
+
+  .warp-tile.active {
+    border-color: var(--neon-yellow);
+    background: #3e2e04;
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+  }
+
+  .warp-tile.locked {
+    opacity: 0.45;
+    cursor: not-allowed;
+    border-color: #475569;
+    filter: grayscale(0.8);
+  }
+
+  .warp-tile .tile-title { font-size: 1.1rem; font-weight: 800; }
+  .warp-tile .tile-sub { font-size: 0.85rem; color: var(--neon-blue); }
+
+  /* FINALE STUDENT NUMBER BUTTONS */
+  .cert-number-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 14px;
+    max-height: 290px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(11, 17, 32, 0.9);
+    border: 2px solid #334155;
+    border-radius: 20px;
+  }
+
+  .cert-num-btn {
+    background: #1e293b;
+    border: 2px solid #475569;
+    border-radius: 14px;
+    padding: 10px 4px;
+    font-size: calc(1rem * var(--font-scale));
+    font-weight: 900;
+    cursor: pointer;
+    color: #ffffff;
+    transition: all 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  .cert-num-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-color: var(--neon-yellow);
+    transform: translateY(-3px);
+    box-shadow: 0 0 16px rgba(56, 189, 248, 0.6);
+  }
+
+  .cert-num-btn:active {
+    transform: scale(0.95);
+  }
+
+  .cert-num-btn .num-tag {
+    color: var(--neon-yellow);
+    font-size: 0.88em;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0b1120; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 5px; }
+</style>
+</head>
+<body>
+
+<div id="game-app">
+  <!-- TOP HUD -->
+  <header class="hud-bar">
+    <div class="hud-hero">
+      <div class="hero-avatar">📜</div>
+      <div class="hud-stats">
+        <div class="stage-badge" id="hud-stage-title">准备中...</div>
+        <div class="exp-track">
+          <div class="exp-fill" id="hud-exp-fill"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hud-actions">
+      <button class="smart-btn" onclick="adjustFontSize(-0.1)" title="缩小字号">A-</button>
+      <button class="smart-btn" onclick="adjustFontSize(0.1)" title="放大字号">A+</button>
+      <button class="smart-btn gold" id="sound-toggle-btn" onclick="toggleAudioEngine()">🔊 音效: 开</button>
+      <button class="smart-btn primary" onclick="toggleFullScreen()">⛶ 全屏</button>
+    </div>
+  </header>
+
+  <!-- ARENA VIEWPORT -->
+  <main class="arena-viewport" id="arena-viewport"></main>
+
+  <!-- BOTTOM CONTROLLER BAR -->
+  <footer class="footer-controller">
+    <button class="nav-btn prev-btn" id="btn-prev" onclick="goToPrevStage()">
+      <span>◀ 上一关</span>
+    </button>
+    
+    <button class="nav-btn menu-btn" onclick="openQuestMenu()">
+      <span>🗺️ 关卡传送门</span>
+    </button>
+
+    <button class="nav-btn next-btn" id="btn-next" onclick="goToNextStage()">
+      <span>下一关 ▶</span>
+    </button>
+  </footer>
+</div>
+
+<!-- TOAST NOTIFICATION -->
+<div id="game-toast">🌟 校验成功！</div>
+
+<!-- ROTATING WHEEL OF 7 WORD BLOCKS MODAL -->
+<div class="wheel-overlay" id="wheel-modal">
+  <div class="wheel-chassis">
+    <!-- Outer Ring for the 7 Word Blocks -->
+    <div class="wheel-spinner-ring" id="wheel-ring"></div>
+
+    <!-- Center Hub to Spin -->
+    <div class="wheel-center-hub" onclick="spinWheelManual()">
+      <span style="font-size: 2.2rem;">☸️</span>
+      <div style="font-size: 0.95rem; font-weight: 900; color: var(--neon-yellow); margin-top: 4px;">旋转转盘</div>
+      <div style="font-size: 0.75rem; color: #94a3b8;">(点击换位)</div>
+    </div>
+
+    <!-- Controls -->
+    <div class="wheel-controls-bar">
+      <button class="smart-btn" style="background:#334155;" onclick="closeWheelModal()">取消选择</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUEST WARP MODAL -->
+<div class="modal-backdrop" id="quest-modal">
+  <div class="modal-panel">
+    <div style="font-size: 2rem; font-weight: 900; color: var(--neon-yellow); text-align: center; margin-bottom: 20px;">
+      ⚔️ 关卡传送地图 (UASA 026) ⚔️
+    </div>
+    <div class="quest-grid" id="warp-grid"></div>
+    <div style="text-align: center; margin-top: 15px;">
+      <button class="smart-btn primary" style="min-width: 140px; margin: 0 auto;" onclick="closeQuestMenu()">返回试炼</button>
+    </div>
+  </div>
+</div>
+
+<!-- SVG BOOBU THE BOOKWORM TEMPLATE -->
+<div style="display: none;">
+  <svg id="svg-boobu" viewBox="0 0 100 100">
+    <defs>
+      <radialGradient id="wormGrad" cx="40%" cy="40%" r="60%">
+        <stop offset="0%" stop-color="#86efac"/>
+        <stop offset="60%" stop-color="#22c55e"/>
+        <stop offset="100%" stop-color="#15803d"/>
+      </radialGradient>
+      <linearGradient id="capGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#1e293b"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+    </defs>
+    <circle cx="20" cy="70" r="12" fill="url(#wormGrad)"/>
+    <circle cx="34" cy="64" r="14" fill="url(#wormGrad)"/>
+    <circle cx="50" cy="62" r="16" fill="url(#wormGrad)"/>
+    <circle cx="70" cy="52" r="22" fill="url(#wormGrad)"/>
+    <ellipse cx="62" cy="58" rx="4" ry="2.5" fill="#f43f5e" opacity="0.6"/>
+    <ellipse cx="82" cy="58" rx="4" ry="2.5" fill="#f43f5e" opacity="0.6"/>
+    <circle cx="64" cy="48" r="5" fill="#000"/>
+    <circle cx="62.5" cy="46.5" r="1.8" fill="#fff"/>
+    <circle cx="78" cy="48" r="5" fill="#000"/>
+    <circle cx="76.5" cy="46.5" r="1.8" fill="#fff"/>
+    <circle cx="64" cy="48" r="9" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+    <circle cx="78" cy="48" r="9" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+    <line x1="73" y1="48" x2="69" y2="48" stroke="#f59e0b" stroke-width="2.5"/>
+    <path d="M 68 56 Q 72 61 76 56" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="70,18 94,27 70,36 46,27" fill="url(#capGrad)" stroke="#fde047" stroke-width="1.5"/>
+    <rect x="62" y="32" width="16" height="7" fill="#0f172a"/>
+    <line x1="70" y1="27" x2="88" y2="35" stroke="#facc15" stroke-width="2"/>
+    <circle cx="88" cy="36" r="2.5" fill="#facc15"/>
+  </svg>
+</div>
+
+<script>
+/* ==========================================================================
+   OFFICIAL 6M ROSTER DATABASE (27 STUDENTS)
+   ========================================================================== */
+const ROSTER_6M = [
+  { no: 1,  en: "ASHRAFF MUHAMMAD DANIEL BIN MOHD NOH", zh: "丹尼尔" },
+  { no: 2,  en: "CINDY TOH AN TIAN", zh: "杜安恬" },
+  { no: 3,  en: "EDEN LAU", zh: "刘奕堂" },
+  { no: 4,  en: "FOO SI SHENG", zh: "符泗盛" },
+  { no: 5,  en: "GAN JIE FOHNG", zh: "颜杰丰" },
+  { no: 6,  en: "GAN ONG SIN", zh: "颜煌星" },
+  { no: 7,  en: "GAN TZI YANG", zh: "颜子杨" },
+  { no: 8,  en: "GAN YU XIN", zh: "颜妤欣" },
+  { no: 9,  en: "GOH JIA LING", zh: "吴佳琳" },
+  { no: 10, en: "JANICE NGOH WAN ROU", zh: "吴婉柔" },
+  { no: 11, en: "JAYDEN WONG JUN YU", zh: "王军宇" },
+  { no: 12, en: "JENNY ANG", zh: "洪婕宁" },
+  { no: 13, en: "KEVIN TOW WEI CHEN", zh: "杜伟诚" },
+  { no: 14, en: "LAU WEI JIE", zh: "刘伟杰" },
+  { no: 15, en: "LAU ZHI XUAN", zh: "刘智瑄" },
+  { no: 16, en: "LIM ZHI YAANG", zh: "林志旸" },
+  { no: 17, en: "LOH YA XUAN", zh: "罗雅轩" },
+  { no: 18, en: "MUHAMMAD ARIF WAFIY BIN AZMI", zh: "华菲" },
+  { no: 19, en: "NG TIN WEI", zh: "黄庭玮" },
+  { no: 20, en: "NG ZI NING", zh: "黄芷宁" },
+  { no: 21, en: "NIVEDHANRAJ A/L P.SIVARAJ", zh: "尼文" },
+  { no: 22, en: "TAN JAY DEN", zh: "陈济恩" },
+  { no: 23, en: "TAN WEI CHENG", zh: "陈伟承" },
+  { no: 24, en: "TEH ZHI JIN", zh: "郑智谨" },
+  { no: 25, en: "THOR LI JUN", zh: "杜俐君" },
+  { no: 26, en: "TOH WU SIANG", zh: "杜武祥" },
+  { no: 27, en: "WANG HONG YONG", zh: "王宏勇" }
+];
+
+/* ==========================================================================
+   MALAYSIA STANDARD TIME ENGINE (UTC+8)
+   ========================================================================== */
+function getMalaysiaDate() {
+  const now = new Date();
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+  return new Date(utc + (3600000 * 8));
+}
+
+function formatMYTDate(d) {
+  return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
+}
+
+function formatMYTTime(d) {
+  const pad = n => n < 10 ? '0' + n : n;
+  let h = d.getHours();
+  let m = d.getMinutes();
+  let s = d.getSeconds();
+  const ampm = h >= 12 ? '下午' : '上午';
+  h = h % 12 || 12;
+  return `${ampm} ${pad(h)}:${pad(m)}:${pad(s)}`;
+}
+
+const sessionTimes = {
+  startObj: getMalaysiaDate(),
+  endObj: null,
+  get formattedStart() { return formatMYTTime(this.startObj); },
+  get formattedEnd() { return this.endObj ? formatMYTTime(this.endObj) : ''; },
+  get formattedDate() { return formatMYTDate(this.startObj); }
+};
+
+/* ==========================================================================
+   RETRO AUDIO SYNTHESIZER (WEB AUDIO API - ZERO DEPENDENCIES)
+   ========================================================================== */
+class RetroSoundEngine {
+  constructor() {
+    this.ctx = null;
+    this.enabled = true;
+  }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+    }
+  }
+  playHop() {
+    if (!this.enabled) return;
+    this.init();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const now = this.ctx.currentTime;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(280, now);
+    osc.frequency.exponentialRampToValueAtTime(640, now + 0.08);
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.09);
+  }
+  playCorrect() {
+    if (!this.enabled) return;
+    this.init();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const startTime = this.ctx.currentTime + idx * 0.09;
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, startTime);
+      gain.gain.setValueAtTime(0.25, startTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.28);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(startTime);
+      osc.stop(startTime + 0.3);
+    });
+  }
+  playWrongHeavy() {
+    if (!this.enabled) return;
+    this.init();
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(160, now);
+    osc.frequency.linearRampToValueAtTime(50, now + 0.38);
+    gain.gain.setValueAtTime(0.38, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.38);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.39);
+  }
+  playClick() {
+    if (!this.enabled) return;
+    this.init();
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const now = this.ctx.currentTime;
+    osc.type = "square";
+    osc.frequency.setValueAtTime(800, now);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.04);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.05);
+  }
+}
+
+const SFX = new RetroSoundEngine();
+
+/* ==========================================================================
+   GAME DATABASE: UASA 026 CURRICULAR ENGINE
+   ALL ITEMS FOR BAHAGIAN B, C ARE 100% BLANKS (2-3 CHAR WORDS & PUNCTUATION)
+   BAHAGIAN D: 5 SENTENCES (178 MANDARIN CHARACTERS) REARRANGING PRACTICE
+   ========================================================================== */
+const STAGES = [
+  // ------------------------------------------------------------------------
+  // STAGE 0: BAHAGIAN A - READING PASSAGE (完璧归赵)
+  // ------------------------------------------------------------------------
+  {
+    id: "A_READING",
+    type: "reading",
+    chapter: "甲组：史诗诵读",
+    title: "《完璧归赵》篇章研读",
+    source: "改写自《史记·廉颇蔺相如列传》",
+    sentences: [
+      "战国时期，秦国最强，常常侵略他国。",
+      "一回，赵王得到一块稀世的璧玉——和氏璧。",
+      "赵国得到和氏璧的消息很快传到了秦王的耳中。",
+      "秦王对这件稀世之宝产生了非分之想，就派人致函赵王，希望用十五座城池来换取和氏璧。",
+      "赵王害怕秦王有诈，不想把和氏璧送去，但又怕得罪秦国招来灭国之灾。",
+      "赵王和大臣们商量了很久也没有结果，有人向赵王推荐了蔺相如，说他有勇有谋，可以出使秦国。",
+      "赵王立即召见蔺相如。",
+      "蔺相如说：“秦国强，赵国弱，这件事不能不答应。”",
+      "“若秦王得到了和氏璧却不给城池，那怎么办？”赵王担心地问。",
+      "蔺相如说：“秦国拿出十五座城池来换一块璧玉，这个价值是够高了。要是赵国不答应，错在赵国。要是秦国不交出城池，那么错在秦国。”",
+      "“我愿意带着和氏璧到秦国去。如果秦王真的拿十五座城池来换，我就把和氏璧交给他；如果他不肯，我一定把和氏璧送回来。那时候秦国理屈，就没有理由动兵了。”",
+      "赵王别无他法，只好答应。",
+      "就这样，蔺相如带了和氏璧出使秦国。",
+      "秦王得知蔺相如到来后，没有按照正式的礼仪在朝廷上接见他，而是在一个临时居住的宫室里召见他。",
+      "秦王接过和氏璧后，欣赏许久却不作回应。",
+      "蔺相如知道秦王不是真心拿城池来换和氏璧，就走上前去说：“和氏璧上有点小缺陷，让我指给大王看看。”",
+      "秦王将和氏璧递给了蔺相如，蔺相如把和氏璧拿到手后，马上退后几步，靠着柱子站住。",
+      "蔺相如大怒道：“大王想得此璧，派人致函赵王。赵王和群臣认为秦国拿十五座城池换和氏璧，只不过是一种空话，可我认为秦国不会欺骗。”",
+      "“现在我看大王根本无意拿城池来换和氏璧，就取回此璧。大王如要威逼我，我情愿把自己的头与这块璧一起在柱子上撞个粉碎！”",
+      "蔺相如高举和氏璧，做出要撞击柱子的样子。",
+      "秦王只得道歉，并在地图上指出要割让给赵王的十五座城池。",
+      "蔺相如看出这不过是秦王的缓兵之计，便要求秦王斋戒五日，才接受和氏璧。",
+      "秦王只好同意了，但蔺相如推断秦王不会实现诺言，便派手下连夜把和氏璧带回了赵国。",
+      "五天后，秦王召集大臣们在朝堂举行接受和氏璧的仪式，并叫蔺相如上朝。",
+      "蔺相如不慌不忙地上前给秦王行了礼。",
+      "秦王说：“我已经遵守承诺斋戒五天，现在你把和氏璧拿出来吧！”",
+      "蔺相如说：“我担心和氏璧被大王骗走，对不起赵王，便把和氏璧送回赵国去了。请大王治我的罪吧！”",
+      "秦王心里气愤极了，但后来冷静一想，杀了蔺相如非但得不到和氏璧，还会弄僵两国的关系，便下令放了蔺相如。"
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGES 1 to 10: BAHAGIAN A - QUESTIONS 1 TO 10
+  // ------------------------------------------------------------------------
+  {
+    id: "A1",
+    type: "mcq",
+    chapter: "甲组：第 1 题",
+    title: "赵王的顾虑",
+    stem: "秦王希望用十五座城池换取和氏璧，为什么赵王不敢拒绝？",
+    options: [
+      { key: "A", text: "他受到秦王的恐吓。" },
+      { key: "B", text: "他畏惧秦王的势力。" },
+      { key: "C", text: "他要顾及秦王的脸面。" },
+      { key: "D", text: "他要还秦王一个人情。" }
+    ],
+    answer: "B"
+  },
+  {
+    id: "A2",
+    type: "mcq",
+    chapter: "甲组：第 2 题",
+    title: "蔺相如的见地",
+    stem: "对于赵国与秦国的这宗交易，蔺相如有什么看法？",
+    options: [
+      { key: "A", text: "赵国应该顺应要求以免招致灭国之灾。" },
+      { key: "B", text: "赵国应该设法取得秦国的十五座城池。" },
+      { key: "C", text: "赵国应该利用和氏璧促进两国的邦交关系。" },
+      { key: "D", text: "赵国应该设计让秦国背上不讲信义的罪名。" }
+    ],
+    answer: "A"
+  },
+  {
+    id: "A3",
+    type: "mcq",
+    chapter: "甲组：第 3 题",
+    title: "秦王的礼数",
+    stem: "蔺相如一到秦国，秦王怎样对待他？",
+    options: [
+      { key: "A", text: "秦王故意怠慢蔺相如。" },
+      { key: "B", text: "秦王利诱蔺相如上当。" },
+      { key: "C", text: "秦王威逼蔺相如就范。" },
+      { key: "D", text: "秦王当面羞辱蔺相如。" }
+    ],
+    answer: "A"
+  },
+  {
+    id: "A4",
+    type: "mcq",
+    chapter: "甲组：第 4 题",
+    title: "言语之智",
+    stem: "蔺相如说“和氏璧上有点小缺陷，让我指给大王看看”，说明了他是个怎样的人？",
+    options: [
+      { key: "A", text: "足智多谋" },
+      { key: "B", text: "言行慎重" },
+      { key: "C", text: "善于虚张声势" },
+      { key: "D", text: "善于察言观色" }
+    ],
+    answer: "A"
+  },
+  {
+    id: "A5",
+    type: "mcq",
+    chapter: "甲组：第 5 题",
+    title: "立柱之决",
+    stem: "为什么蔺相如高举和氏璧，做出要撞击柱子的样子？",
+    options: [
+      { key: "A", text: "他要向秦王表达不满。" },
+      { key: "B", text: "他要对秦王做出威胁。" },
+      { key: "C", text: "他要揭穿秦王的把戏。" },
+      { key: "D", text: "他要试探秦王的诚意。" }
+    ],
+    answer: "B"
+  },
+  {
+    id: "A6",
+    type: "mcq",
+    chapter: "甲组：第 6 题",
+    title: "秦王的权衡",
+    stem: "根据本文最后一段，为什么秦王不处置蔺相如？",
+    options: [
+      { key: "A", text: "他不想被世人唾骂。" },
+      { key: "B", text: "他以国家利益为重。" },
+      { key: "C", text: "他佩服蔺相如的英勇。" },
+      { key: "D", text: "他怜惜蔺相如的才智。" }
+    ],
+    answer: "B"
+  },
+  {
+    id: "A7",
+    type: "mcq",
+    chapter: "甲组：第 7 题",
+    title: "成语辨析",
+    stem: "哪项用来取代句子中的“有勇有谋”最合适？",
+    options: [
+      { key: "A", text: "雄才大略" },
+      { key: "B", text: "深谋远虑" },
+      { key: "C", text: "胆大心细" },
+      { key: "D", text: "智勇双全" }
+    ],
+    answer: "D"
+  },
+  {
+    id: "A8",
+    type: "mcq",
+    chapter: "甲组：第 8 题",
+    title: "词义理解",
+    stem: "哪项是句子中“遵守”承诺的意思？",
+    options: [
+      { key: "A", text: "按照步骤进行" },
+      { key: "B", text: "按照程序进行" },
+      { key: "C", text: "按照指示行动" },
+      { key: "D", text: "按照规定行动" }
+    ],
+    answer: "D"
+  },
+  {
+    id: "A9",
+    type: "mcq",
+    chapter: "甲组：第 9 题",
+    title: "近义替代",
+    stem: "哪个词语可以代替句子中的“威逼”？",
+    options: [
+      { key: "A", text: "恐吓" },
+      { key: "B", text: "陷害" },
+      { key: "C", text: "胁迫" },
+      { key: "D", text: "利诱" }
+    ],
+    answer: "C"
+  },
+  {
+    id: "A10",
+    type: "mcq",
+    chapter: "甲组：第 10 题",
+    title: "多音辨读",
+    stem: "哪项的“强”和“秦国强”读音相同？",
+    options: [
+      { key: "A", text: "倔强 (jiàng)" },
+      { key: "B", text: "勉强 (qiǎng)" },
+      { key: "C", text: "强横 (qiáng)" },
+      { key: "D", text: "强求 (qiǎng)" }
+    ],
+    answer: "C"
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 11: BAHAGIAN B - PASSAGE (阿喜的花篮)
+  // ------------------------------------------------------------------------
+  {
+    id: "B_READING",
+    type: "reading",
+    chapter: "乙组：名篇伴读",
+    title: "《阿喜的花篮》篇章研读",
+    source: "琦君《阿喜的花篮》（有改动）",
+    sentences: [
+      "阿喜是我的好朋友。",
+      "他会用麦秆编出吱吱叫的麻雀，会用木块削成满地转的陀螺。",
+      "这些可爱的手工艺品，阿喜做，我玩。",
+      "有一次，阿喜用软软的嫩柳条编了个漂亮的小花篮，我把心爱的陶瓷娃娃放在里面，拎着去给隔壁玉英看，玉英央求我把小花篮和陶瓷娃娃借她玩一天。",
+      "玉英正生病躺在床上，我当然愿意借她玩。",
+      "第二天我去看她时，她抱歉地对我说：“为了要研究花篮是怎么编的，我把它拆开来却编不回去了。”",
+      "“那么陶瓷娃娃呢？”我连忙反问她。",
+      "“陶瓷娃娃的一只手臂，也被我睡觉时不小心压断了，非常对不起！”",
+      "我生气地说：“你怎么把我借你玩的东西统统弄坏了。”",
+      "我气得转身奔回家，向阿喜投诉。",
+      "我哭着说：“玉英好坏，拆掉了你编的花篮，又弄断陶瓷娃娃的一只手臂。”",
+      "阿喜一声不响地走开了。",
+      "我质问阿喜为什么不理我。",
+      "阿喜回答：“你哭得那么起劲，一口咬定玉英坏，叫我说什么？你们一向那么要好，我知道玉英一点也不坏，只是不小心弄坏了你的东西，你不应该这么想的。”",
+      "我听了默默低下头，说不出话来。",
+      "阿喜说：“我再编一个花篮，你去摘些鲜花放在里面，拎着去给玉英，对她说，等她病好了，我会教你们编花篮。那个陶瓷娃娃，你拿回来，我给你修补好。”",
+      "我马上抹去眼泪，帮阿喜摘柳条，阿喜很快就编好了花篮。",
+      "我在院子里采了一朵玫瑰花放在里面，兴冲冲地拎着去给玉英，她刚喝了药，盖着被子出了一身汗，一看见我和手中的花篮，高兴得说不出话来。",
+      "“玉英，这个花篮是阿喜特地编给你的，阿喜说他会教我们编呢！”",
+      "“好漂亮啊！你们真好，可是那个陶瓷娃娃的手臂……”",
+      "“不要紧，我拿回去，阿喜会给我修补。”",
+      "玉英把陶瓷娃娃递给我，接着从枕头底下掏出她最珍惜的花布娃娃送给了我。",
+      "花布娃娃比我的陶瓷娃娃还漂亮，还好玩。",
+      "我即刻奔回家，给阿喜和妈妈看可爱的花布娃娃，我忽然觉得玉英是我最要好的朋友。",
+      "妈妈看我这么高兴，也开心地笑了。",
+      "“你看玉英对你多好，她把最心爱的东西送给你。你以后也要这样，这才是相亲相爱嘛！”她慢条斯理地对我说。",
+      "“还有，阿喜他多好，总是用灵巧的手，做出各种各样的小玩意儿，让你送朋友，给朋友带来快乐。”",
+      "我听了妈妈的话，想到自己实在不应该为断手臂的陶瓷娃娃跟玉英生气，我觉得自己太小气了。",
+      "我应该学阿喜，欢欢喜喜地为人编美丽的花篮，带给别人快乐。"
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 12: BAHAGIAN B - Q1(a) [ALL BLANKS: WORDS & PUNCTUATION]
+  // Target: 玉英 拆掉了 阿喜 编织的 花篮 ， 并且 无法 复原 ； 而且 压断了 陶瓷 娃娃的 手臂 。
+  // ------------------------------------------------------------------------
+  {
+    id: "B1A",
+    type: "all_blanks",
+    chapter: "乙组：试题 1(a)",
+    title: "起因全盘重构：生气的由头",
+    stem: "【试题 1(a)】哪些事情让“我”感到生气？请依次点击每一个槽位（含标点与词块），选装符文并校验：",
+    tokens: [
+      { id: 0, isPunct: false, answer: "玉英", options: ["玉英", "美华", "阿香", "小丽", "素芬", "翠兰", "秀琴"] },
+      { id: 1, isPunct: false, answer: "拆掉了", options: ["拆掉了", "弄脏了", "剪断了", "踩碎了", "丢弃了", "藏起来", "撕破了"] },
+      { id: 2, isPunct: false, answer: "阿喜", options: ["阿喜", "大强", "小勇", "志明", "建国", "富贵", "阿福"] },
+      { id: 3, isPunct: false, answer: "编织的", options: ["编织的", "雕刻的", "缝制的", "黏合的", "锻造的", "彩绘的", "拼贴的"] },
+      { id: 4, isPunct: false, answer: "花篮", options: ["花篮", "草帽", "纸鸢", "风车", "泥狗", "陀螺", "竹笛"] },
+      { id: 5, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 6, isPunct: false, answer: "并且", options: ["并且", "或者", "如果", "纵然", "虽然", "因而", "因为"] },
+      { id: 7, isPunct: false, answer: "无法", options: ["无法", "不可", "难以", "不愿", "不能", "何必", "无需"] },
+      { id: 8, isPunct: false, answer: "复原", options: ["复原", "更新", "重造", "拆解", "修补", "改建", "翻新"] },
+      { id: 9, isPunct: true,  answer: "；", options: ["；", "，", "。", "！", "？", "、", "——"] },
+      { id: 10, isPunct: false, answer: "而且", options: ["而且", "但是", "固然", "宁可", "哪怕", "假使", "以便"] },
+      { id: 11, isPunct: false, answer: "压断了", options: ["压断了", "摔碎了", "烧焦了", "浸湿了", "冻裂了", "撞倒了", "碰歪了"] },
+      { id: 12, isPunct: false, answer: "陶瓷", options: ["陶瓷", "塑料", "玻璃", "木制", "布料", "金属", "石雕"] },
+      { id: 13, isPunct: false, answer: "娃娃的", options: ["娃娃的", "动物的", "小车的", "积木的", "皮球的", "面具的", "木偶的"] },
+      { id: 14, isPunct: false, answer: "手臂", options: ["手臂", "脑袋", "双脚", "尾巴", "翅膀", "耳朵", "肩膀"] },
+      { id: 15, isPunct: true,  answer: "。", options: ["。", "！", "？", "，", "；", "……", "——"] }
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 13: BAHAGIAN B - Q1(b) [ALL BLANKS: WORDS & PUNCTUATION]
+  // Target: 阿喜 答应 重新 编织 花篮 送给 玉英 ， 同时 承诺 修补好 破损的 陶瓷 娃娃 。
+  // ------------------------------------------------------------------------
+  {
+    id: "B1B",
+    type: "all_blanks",
+    chapter: "乙组：试题 1(b)",
+    title: "止怒全盘重构：阿喜的智慧",
+    stem: "【试题 1(b)】阿喜怎样平息“我”心中的怒气？请依次装填全部词块与标点：",
+    tokens: [
+      { id: 0, isPunct: false, answer: "阿喜", options: ["阿喜", "大强", "小勇", "志明", "建国", "富贵", "阿福"] },
+      { id: 1, isPunct: false, answer: "答应", options: ["答应", "拒绝", "假装", "命令", "反驳", "推脱", "迟疑"] },
+      { id: 2, isPunct: false, answer: "重新", options: ["重新", "勉强", "私自", "悄悄", "胡乱", "停止", "暂缓"] },
+      { id: 3, isPunct: false, answer: "编织", options: ["编织", "采摘", "雕琢", "涂抹", "粘贴", "组装", "铸造"] },
+      { id: 4, isPunct: false, answer: "花篮", options: ["花篮", "陀螺", "麻雀", "竹蜻蜓", "小木盒", "纸风车", "彩泥人"] },
+      { id: 5, isPunct: false, answer: "送给", options: ["送给", "借给", "卖给", "丢给", "还给", "赔给", "留给"] },
+      { id: 6, isPunct: false, answer: "玉英", options: ["玉英", "美华", "阿香", "小丽", "素芬", "翠兰", "秀琴"] },
+      { id: 7, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 8, isPunct: false, answer: "同时", options: ["同时", "然而", "固然", "否则", "若是", "索性", "既然"] },
+      { id: 9, isPunct: false, answer: "承诺", options: ["承诺", "隐瞒", "否认", "猜疑", "抱怨", "讥讽", "质问"] },
+      { id: 10, isPunct: false, answer: "修补好", options: ["修补好", "重新买", "丢弃掉", "打碎掉", "拆解开", "收藏起", "转送人"] },
+      { id: 11, isPunct: false, answer: "破损的", options: ["破损的", "完好的", "崭新的", "褪色的", "肮脏的", "冰冷的", "贵重的"] },
+      { id: 12, isPunct: false, answer: "陶瓷", options: ["陶瓷", "塑料", "玻璃", "木制", "布料", "金属", "石雕"] },
+      { id: 13, isPunct: false, answer: "娃娃", options: ["娃娃", "动物", "小车", "积木", "皮球", "面具", "木偶"] },
+      { id: 14, isPunct: true,  answer: "。", options: ["。", "！", "？", "，", "；", "……", "——"] }
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 14: BAHAGIAN B - Q2 [ALL BLANKS: WORDS & PUNCTUATION]
+  // Target: 玉英 从枕头 底下 掏出了 十分 珍惜的 花布 娃娃 ， 郑重 赠送给 作者 。
+  // ------------------------------------------------------------------------
+  {
+    id: "B2",
+    type: "all_blanks",
+    chapter: "乙组：试题第 2 题",
+    title: "真情全盘重构：枕下珍宝",
+    stem: "【试题 2】哪件事情可以看出玉英非常重视与“我”的友情？请依次填入每一个槽位：",
+    tokens: [
+      { id: 0, isPunct: false, answer: "玉英", options: ["玉英", "美华", "阿香", "小丽", "素芬", "翠兰", "秀琴"] },
+      { id: 1, isPunct: false, answer: "从枕头", options: ["从枕头", "从抽屉", "从书包", "从衣柜", "从床底", "从桌面", "从箱子"] },
+      { id: 2, isPunct: false, answer: "底下", options: ["底下", "上面", "后方", "缝隙", "表面", "角落", "边缘"] },
+      { id: 3, isPunct: false, answer: "掏出了", options: ["掏出了", "藏起了", "扔掉了", "撕坏了", "找寻着", "借来了", "购买了"] },
+      { id: 4, isPunct: false, answer: "十分", options: ["十分", "毫不", "极其", "未免", "索性", "略微", "似乎"] },
+      { id: 5, isPunct: false, answer: "珍惜的", options: ["珍惜的", "讨厌的", "常见的", "便宜的", "破烂的", "陌生的", "普通的"] },
+      { id: 6, isPunct: false, answer: "花布", options: ["花布", "塑料", "橡胶", "纸质", "金属", "木制", "石雕"] },
+      { id: 7, isPunct: false, answer: "娃娃", options: ["娃娃", "手帕", "铃铛", "折扇", "发夹", "皮球", "花环"] },
+      { id: 8, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 9, isPunct: false, answer: "郑重", options: ["郑重", "随意", "轻蔑", "匆忙", "悄悄", "愤怒", "勉强"] },
+      { id: 10, isPunct: false, answer: "赠送给", options: ["赠送给", "变卖给", "借用给", "展示给", "藏匿给", "归还给", "抢夺回"] },
+      { id: 11, isPunct: false, answer: "作者", options: ["作者", "阿喜", "母亲", "医生", "同学", "邻居", "路人"] },
+      { id: 12, isPunct: true,  answer: "。", options: ["。", "！", "？", "，", "；", "……", "——"] }
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 15: BAHAGIAN B - Q3 [ALL BLANKS: WORDS & PUNCTUATION]
+  // Target: 朋友 之间 应当 互相 包容 体谅 ， 并且 学习 阿喜 宽厚 为人 ， 带给 别人 快乐 。
+  // ------------------------------------------------------------------------
+  {
+    id: "B3",
+    type: "all_blanks",
+    chapter: "乙组：试题第 3 题",
+    title: "哲理全盘重构：宽容之道",
+    stem: "【试题 3】听了妈妈说的这番话后，“我”获得了什么感悟？请逐一补全全句：",
+    tokens: [
+      { id: 0, isPunct: false, answer: "朋友", options: ["朋友", "对手", "邻居", "亲戚", "路人", "师长", "宾客"] },
+      { id: 1, isPunct: false, answer: "之间", options: ["之间", "之外", "以上", "表面", "心底", "周围", "身旁"] },
+      { id: 2, isPunct: false, answer: "应当", options: ["应当", "切忌", "休想", "难以", "无须", "不必", "何必"] },
+      { id: 3, isPunct: false, answer: "互相", options: ["互相", "彼此", "各自", "暗自", "独自", "单向", "公然"] },
+      { id: 4, isPunct: false, answer: "包容", options: ["包容", "计较", "苛求", "敌对", "猜忌", "嘲讽", "排斥"] },
+      { id: 5, isPunct: false, answer: "体谅", options: ["体谅", "指责", "刁难", "戏弄", "怨恨", "嫉妒", "嫌弃"] },
+      { id: 6, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 7, isPunct: false, answer: "并且", options: ["并且", "或者", "反而", "即使", "哪怕", "倘若", "固然"] },
+      { id: 8, isPunct: false, answer: "学习", options: ["学习", "藐视", "疏远", "模仿", "排斥", "怀疑", "防备"] },
+      { id: 9, isPunct: false, answer: "阿喜", options: ["阿喜", "大强", "小勇", "志明", "建国", "富贵", "阿福"] },
+      { id: 10, isPunct: false, answer: "宽厚", options: ["宽厚", "狭隘", "暴躁", "冷漠", "狠毒", "傲慢", "懦弱"] },
+      { id: 11, isPunct: false, answer: "为人", options: ["为人", "处事", "经商", "做工", "求学", "远行", "争辩"] },
+      { id: 12, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 13, isPunct: false, answer: "带给", options: ["带给", "索取", "掠夺", "换来", "施加", "转嫁", "留存"] },
+      { id: 14, isPunct: false, answer: "别人", options: ["别人", "自己", "长辈", "对手", "仇家", "外人", "全家"] },
+      { id: 15, isPunct: false, answer: "快乐", options: ["快乐", "痛苦", "压力", "忧愁", "烦恼", "麻烦", "猜忌"] },
+      { id: 16, isPunct: true,  answer: "。", options: ["。", "！", "？", "，", "；", "……", "——"] }
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 16: BAHAGIAN B - Q4 [ALL BLANKS: WORDS & PUNCTUATION]
+  // Target: 阿喜 手艺 高超 ， 是个 心灵 手巧的 巧匠 ； 同时 胸襟 宽厚 ， 为人 善解 人意 。
+  // ------------------------------------------------------------------------
+  {
+    id: "B4",
+    type: "all_blanks",
+    chapter: "乙组：试题第 4 题",
+    title: "品格全盘重构：阿喜的人格",
+    stem: "【试题 4】阿喜是个怎样的人？请依次装填全部词块与标点，展现其双重优秀品德：",
+    tokens: [
+      { id: 0, isPunct: false, answer: "阿喜", options: ["阿喜", "大强", "小勇", "志明", "建国", "富贵", "阿福"] },
+      { id: 1, isPunct: false, answer: "手艺", options: ["手艺", "口才", "相貌", "体力", "算术", "家境", "行头"] },
+      { id: 2, isPunct: false, answer: "高超", options: ["高超", "平庸", "拙劣", "生疏", "粗糙", "普通", "退步"] },
+      { id: 3, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 4, isPunct: false, answer: "是个", options: ["是个", "非但", "岂敢", "俨然", "难以", "莫非", "决非"] },
+      { id: 5, isPunct: false, answer: "心灵", options: ["心灵", "手脚", "身躯", "容貌", "步伐", "思绪", "目光"] },
+      { id: 6, isPunct: false, answer: "手巧的", options: ["手巧的", "笨拙的", "大意的", "迟钝的", "慌张的", "粗心的", "鲁莽的"] },
+      { id: 7, isPunct: false, answer: "巧匠", options: ["巧匠", "学徒", "商人", "懒汉", "书生", "官吏", "闲人"] },
+      { id: 8, isPunct: true,  answer: "；", options: ["；", "，", "。", "！", "？", "、", "——"] },
+      { id: 9, isPunct: false, answer: "同时", options: ["同时", "虽然", "因而", "宁可", "哪怕", "否则", "即使"] },
+      { id: 10, isPunct: false, answer: "胸襟", options: ["胸襟", "眼光", "脾气", "胃口", "胆量", "力气", "记性"] },
+      { id: 11, isPunct: false, answer: "宽厚", options: ["宽厚", "狭隘", "暴戾", "刁钻", "狠毒", "傲慢", "小气"] },
+      { id: 12, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 13, isPunct: false, answer: "为人", options: ["为人", "经商", "求学", "做工", "习武", "远行", "争论"] },
+      { id: 14, isPunct: false, answer: "善解", options: ["善解", "横加", "不讲", "难以", "蓄意", "公然", "固执"] },
+      { id: 15, isPunct: false, answer: "人意", options: ["人意", "公愤", "情理", "规矩", "法令", "世故", "风俗"] },
+      { id: 16, isPunct: true,  answer: "。", options: ["。", "！", "？", "，", "；", "……", "——"] }
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 17: BAHAGIAN C - STIMULUS WRITING [ALL BLANKS: WORDS & PUNCTUATION]
+  // Target: 课堂 之上 专心 听课 ， 听从 教诲 ； 课后 认真 完成 功课 ； 亲手 制作 感恩 卡片 敬献 老师 。
+  // ------------------------------------------------------------------------
+  {
+    id: "C_FORGE",
+    type: "all_blanks",
+    chapter: "丙组：供料作文 (10分)",
+    title: "感恩全盘重构：报答师恩",
+    stem: "【丙组】根据提供资料，补全【向师长表示感恩的方式】核心段落（全部词块与标点均需填入）：",
+    tokens: [
+      { id: 0, isPunct: false, answer: "课堂", options: ["课堂", "操场", "食堂", "礼堂", "宿舍", "校门", "走廊"] },
+      { id: 1, isPunct: false, answer: "之上", options: ["之上", "之外", "底下", "四周", "背后", "尽头", "门外"] },
+      { id: 2, isPunct: false, answer: "专心", options: ["专心", "散漫", "分心", "随意", "偷偷", "偶尔", "公然"] },
+      { id: 3, isPunct: false, answer: "听课", options: ["听课", "闲聊", "打瞌睡", "看小说", "画画", "玩闹", "吃零食"] },
+      { id: 4, isPunct: true,  answer: "，", options: ["，", "。", "！", "？", "；", "、", "……"] },
+      { id: 5, isPunct: false, answer: "听从", options: ["听从", "违抗", "忽视", "顶撞", "怀疑", "嘲笑", "怠慢"] },
+      { id: 6, isPunct: false, answer: "教诲", options: ["教诲", "斥责", "牢骚", "闲话", "谎言", "传闻", "借口"] },
+      { id: 7, isPunct: true,  answer: "；", options: ["；", "，", "。", "！", "？", "、", "——"] },
+      { id: 8, isPunct: false, answer: "课后", options: ["课后", "考前", "午休", "假末", "清晨", "夜深", "放学"] },
+      { id: 9, isPunct: false, answer: "认真", options: ["认真", "马虎", "草率", "拖拉", "随意", "敷衍", "匆忙"] },
+      { id: 10, isPunct: false, answer: "完成", options: ["完成", "抄袭", "搁置", "丢弃", "撕毁", "涂改", "藏匿"] },
+      { id: 11, isPunct: false, answer: "功课", options: ["功课", "画作", "试卷", "小说", "日记", "便条", "涂鸦"] },
+      { id: 12, isPunct: true,  answer: "；", options: ["；", "，", "。", "！", "？", "、", "——"] },
+      { id: 13, isPunct: false, answer: "亲手", options: ["亲手", "花钱", "托人", "随意", "被迫", "顺便", "暗中"] },
+      { id: 14, isPunct: false, answer: "制作", options: ["制作", "购买", "索取", "转赠", "倒卖", "收集", "复印"] },
+      { id: 15, isPunct: false, answer: "感恩", options: ["感恩", "索礼", "道歉", "请假", "投诉", "庆贺", "炫耀"] },
+      { id: 16, isPunct: false, answer: "卡片", options: ["卡片", "信件", "礼品", "鲜花", "海报", "横幅", "奖牌"] },
+      { id: 17, isPunct: false, answer: "敬献", options: ["敬献", "变卖", "丢弃", "展示", "寄托", "收缴", "藏匿"] },
+      { id: 18, isPunct: false, answer: "老师", options: ["老师", "同学", "家长", "校长", "路人", "朋友", "班长"] },
+      { id: 19, isPunct: true,  answer: "。", options: ["。", "！", "？", "，", "；", "……", "——"] }
+    ]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGES 18 to 22: BAHAGIAN D - 5 SENTENCES REARRANGING PRACTICE (178 MANDARIN CHARS)
+  // Each word block strictly contains 2-3 Mandarin characters with adjacent punctuation.
+  // ------------------------------------------------------------------------
+  {
+    id: "D1",
+    type: "reorder",
+    chapter: "丁组：篇章重构 (第 1 句)",
+    title: "命题作文重构 · 句一（烈日突变）",
+    stem: "【丁组 · 句一 (36字)】请点击下方词块按正确逻辑语序组装句子。必须用完全部词块后，方可点击校验：",
+    correctBlocks: ["记得", "那是", "一个", "烈日", "当空的", "午后，", "正当", "同学们", "专注", "听课时，", "隔壁", "课室", "突然", "冒出了", "滚滚", "浓烟。"],
+    scrambledBlocks: ["浓烟。", "正当", "那是", "记得", "一个", "隔壁", "专注", "烈日", "听课时，", "当空的", "突然", "课室", "冒出了", "滚滚", "同学们", "午后，"]
+  },
+  {
+    id: "D2",
+    type: "reorder",
+    chapter: "丁组：篇章重构 (第 2 句)",
+    title: "命题作文重构 · 句二（临危不乱）",
+    stem: "【丁组 · 句二 (38字)】请点击下方词块按正确逻辑语序组装句子。必须用完全部词块后，方可点击校验：",
+    correctBlocks: ["班长", "志明", "见状，", "没有", "惊慌", "失措，", "而是", "立刻", "组织", "大家", "用湿", "毛巾", "捂住", "口鼻，", "沿着", "安全", "通道", "迅速", "撤离。"],
+    scrambledBlocks: ["撤离。", "班长", "安全", "没有", "捂住", "志明", "失措，", "立刻", "见状，", "组织", "惊慌", "通道", "大家", "用湿", "口鼻，", "而是", "沿着", "毛巾", "迅速"]
+  },
+  {
+    id: "D3",
+    type: "reorder",
+    chapter: "丁组：篇章重构 (第 3 句)",
+    title: "命题作文重构 · 句三（折返施援）",
+    stem: "【丁组 · 句三 (34字)】请点击下方词块按正确逻辑语序组装句子。必须用完全部词块后，方可点击校验：",
+    correctBlocks: ["当发现", "倒地的", "幼童时，", "他毫不", "犹豫地", "折返", "回去，", "奋力", "搀扶", "伙伴，", "一同", "奔向", "宽阔的", "操场。"],
+    scrambledBlocks: ["操场。", "当发现", "折返", "倒地的", "他毫不", "回去，", "幼童时，", "一同", "犹豫地", "奋力", "奔向", "搀扶", "宽阔的", "伙伴，"]
+  },
+  {
+    id: "D4",
+    type: "reorder",
+    chapter: "丁组：篇章重构 (第 4 句)",
+    title: "命题作文重构 · 句四（众志成城）",
+    stem: "【丁组 · 句四 (35字)】请点击下方词块按正确逻辑语序组装句子。必须用完全部词块后，方可点击校验：",
+    correctBlocks: ["消防员", "赶到", "扑灭了", "火势，", "校长在", "全校", "师生", "面前，", "高度", "赞扬了", "志明", "临危", "不惧的", "英勇", "担当。"],
+    scrambledBlocks: ["担当。", "消防员", "全校", "火势，", "赶到", "面前，", "扑灭了", "校长在", "英勇", "高度", "赞扬了", "师生", "志明", "临危", "不惧的"]
+  },
+  {
+    id: "D5",
+    type: "reorder",
+    chapter: "丁组：篇章重构 (第 5 句)",
+    title: "命题作文重构 · 句五（真谛领悟）",
+    stem: "【丁组 · 句五 (35字)】请点击下方词块按正确逻辑语序组装句子。必须用完全部词块后，方可点击校验：",
+    correctBlocks: ["这一天", "不仅", "让我", "懂得了", "生命的", "宝贵，", "更让我", "深刻", "领悟到", "勇于", "担当，", "才是", "真正的", "小英雄。"],
+    scrambledBlocks: ["小英雄。", "这一天", "懂得了", "不仅", "宝贵，", "让我", "深刻", "生命的", "勇于", "领悟到", "更让我", "担当，", "才是", "真正的"]
+  },
+
+  // ------------------------------------------------------------------------
+  // STAGE 23: GRAND FINALE
+  // ------------------------------------------------------------------------
+  {
+    id: "FINALE",
+    type: "finale",
+    chapter: "终章：荣耀凯旋",
+    title: "UASA 026 勇者全胜通关！",
+    stem: "恭喜全班勇者！你们已攻克全部试炼试题，全程独立完成，未有跳关！"
+  }
+];
+
+/* ==========================================================================
+   GLOBAL GAME STATE
+   ========================================================================== */
+let currentStageIndex = 0;
+let fontScale = 1.05;
+let userExp = 100;
+let isSpeaking = false;
+let currentUtterance = null;
+let sentenceIndex = 0;
+let speechTimer = null;
+
+// Progression tracking (Strict No-Skipping Enforcement)
+let stageCleared = {};
+let maxUnlockedStageIndex = 0;
+
+// Active wheel state
+let activeBlankId = null;
+let activeBlankElement = null;
+let wheelRotationDegrees = 0;
+let currentBlankAnswers = {};
+
+// Reorder state for Bahagian D
+let currentReorderPlaced = [];
+let currentReorderPool = [];
+
+// DOM Cache
+const arena = document.getElementById("arena-viewport");
+const hudTitle = document.getElementById("hud-stage-title");
+const hudExpFill = document.getElementById("hud-exp-fill");
+const questModal = document.getElementById("quest-modal");
+const warpGrid = document.getElementById("warp-grid");
+const btnPrev = document.getElementById("btn-prev");
+const btnNext = document.getElementById("btn-next");
+const wheelModal = document.getElementById("wheel-modal");
+const wheelRing = document.getElementById("wheel-ring");
+
+/* ==========================================================================
+   INITIALIZATION
+   ========================================================================== */
+window.addEventListener("DOMContentLoaded", () => {
+  sessionTimes.startObj = getMalaysiaDate();
+  buildWarpGrid();
+  renderStage(0);
+});
+
+function adjustFontSize(delta) {
+  fontScale = Math.max(0.85, Math.min(1.45, fontScale + delta));
+  document.documentElement.style.setProperty("--font-scale", fontScale);
+  SFX.playClick();
+}
+
+function toggleAudioEngine() {
+  SFX.enabled = !SFX.enabled;
+  const btn = document.getElementById("sound-toggle-btn");
+  btn.innerText = SFX.enabled ? "🔊 音效: 开" : "🔈 音效: 关";
+  SFX.playClick();
+}
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(() => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+function showToast(msg) {
+  const toast = document.getElementById("game-toast");
+  toast.innerText = msg;
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 2200);
+}
+
+function addExp(amount) {
+  userExp += amount;
+  const progress = Math.min(100, Math.round((currentStageIndex / (STAGES.length - 1)) * 100));
+  hudExpFill.style.width = `${Math.max(10, progress)}%`;
+}
+
+function markStageCleared(idx) {
+  stageCleared[idx] = true;
+  if (idx >= maxUnlockedStageIndex) {
+    maxUnlockedStageIndex = Math.min(STAGES.length - 1, idx + 1);
+  }
+  updateNavButtons();
+  buildWarpGrid();
+}
+
+function updateNavButtons() {
+  btnPrev.disabled = currentStageIndex === 0;
+  btnPrev.style.opacity = currentStageIndex === 0 ? "0.4" : "1";
+  btnPrev.style.cursor = currentStageIndex === 0 ? "not-allowed" : "pointer";
+
+  const isCleared = !!stageCleared[currentStageIndex];
+  const isLast = currentStageIndex === STAGES.length - 1;
+
+  if (isLast) {
+    btnNext.disabled = true;
+    btnNext.style.opacity = "0.4";
+    btnNext.style.cursor = "not-allowed";
+  } else if (!isCleared) {
+    btnNext.disabled = false;
+    btnNext.style.opacity = "0.4";
+    btnNext.style.cursor = "not-allowed";
+  } else {
+    btnNext.disabled = false;
+    btnNext.style.opacity = "1";
+    btnNext.style.cursor = "pointer";
+  }
+}
+
+/* ==========================================================================
+   NAVIGATION ENGINE (STRICT: NO SKIPPING ALLOWED)
+   ========================================================================== */
+function goToPrevStage() {
+  stopAllAudio();
+  if (currentStageIndex > 0) {
+    currentStageIndex--;
+    renderStage(currentStageIndex);
+    SFX.playClick();
+  }
+}
+
+function goToNextStage() {
+  stopAllAudio();
+  if (!stageCleared[currentStageIndex]) {
+    SFX.playWrongHeavy();
+    showToast("⚠️ 当前关卡尚未通关，禁止跳关！请先正确答题并完成校验。");
+    return;
+  }
+  if (currentStageIndex < STAGES.length - 1) {
+    currentStageIndex++;
+    renderStage(currentStageIndex);
+    SFX.playClick();
+  }
+}
+
+function warpToStage(idx) {
+  if (idx > maxUnlockedStageIndex) {
+    SFX.playWrongHeavy();
+    showToast("🔒 前方关卡尚未解锁！严禁跳关，请按顺序完成每一关考核！");
+    return;
+  }
+  stopAllAudio();
+  currentStageIndex = idx;
+  renderStage(idx);
+  closeQuestMenu();
+  SFX.playClick();
+}
+
+function openQuestMenu() {
+  SFX.playClick();
+  buildWarpGrid();
+  questModal.style.display = "flex";
+}
+
+function closeQuestMenu() {
+  SFX.playClick();
+  questModal.style.display = "none";
+}
+
+function buildWarpGrid() {
+  warpGrid.innerHTML = "";
+  STAGES.forEach((stage, idx) => {
+    const isUnlocked = idx <= maxUnlockedStageIndex;
+    const isDone = !!stageCleared[idx];
+    const tile = document.createElement("div");
+    tile.className = "warp-tile" + (!isUnlocked ? " locked" : "");
+    tile.id = `warp-tile-${idx}`;
+    tile.innerHTML = `
+      <div class="tile-title">${!isUnlocked ? "🔒 " : (isDone ? "✓ " : "")}${stage.id}</div>
+      <div class="tile-sub">${stage.title.split("：")[0]}</div>
+    `;
+    tile.onclick = () => warpToStage(idx);
+    warpGrid.appendChild(tile);
+  });
+}
+
+/* ==========================================================================
+   STAGE RENDER DISPATCHER
+   ========================================================================== */
+function renderStage(idx) {
+  stopAllAudio();
+  const stage = STAGES[idx];
+  hudTitle.innerText = `${stage.chapter} - ${stage.title}`;
+  addExp(20);
+
+  updateNavButtons();
+
+  document.querySelectorAll(".warp-tile").forEach((tile, tIdx) => {
+    tile.classList.toggle("active", tIdx === idx);
+  });
+
+  if (stage.type === "reading") {
+    renderReadingStage(stage);
+  } else if (stage.type === "mcq") {
+    renderMcqStage(stage);
+  } else if (stage.type === "all_blanks") {
+    renderAllBlanksStage(stage);
+  } else if (stage.type === "reorder") {
+    renderReorderStage(stage);
+  } else if (stage.type === "finale") {
+    renderFinaleStage(stage);
+  }
+}
+
+/* ==========================================================================
+   PACER READING ENGINE: SENTENCE-BY-SENTENCE WITH BOOBU THE BOOKWORM
+   ========================================================================== */
+function renderReadingStage(stage) {
+  sentenceIndex = 0;
+  arena.innerHTML = `
+    <div class="reading-quest-card">
+      <div class="reading-meta-tag">📖 书虫布布伴读模式 · 逐句研析</div>
+      <div style="font-size: 1.15rem; color: #94a3b8; margin-top: 10px;">${stage.source}</div>
+
+      <div id="bookworm-pacer">
+        ${document.getElementById("svg-boobu").outerHTML}
+      </div>
+
+      <div class="sentence-screen" id="sentence-screen"></div>
+
+      <div style="display:flex; gap:16px; margin-top:10px; align-items:center;">
+        <button class="smart-btn" onclick="prevSentence()">⏮ 上一句</button>
+        <button class="smart-btn primary" id="btn-read-tts" onclick="speakCurrentSentence()">🔊 朗读此句 (布布领读)</button>
+        <button class="smart-btn" onclick="nextSentence()">下一句 ⏭</button>
+      </div>
+
+      <div style="margin-top: 14px; font-size: 1rem; color: #38bdf8;" id="sentence-counter">
+        第 1 句 / 共 ${stage.sentences.length} 句
+      </div>
+    </div>
+  `;
+  displaySentence(stage, 0);
+}
+
+function displaySentence(stage, sIdx) {
+  stopAllAudio();
+  const screen = document.getElementById("sentence-screen");
+  const counter = document.getElementById("sentence-counter");
+  const rawText = stage.sentences[sIdx];
+  counter.innerText = `第 ${sIdx + 1} 句 / 共 ${stage.sentences.length} 句`;
+
+  screen.innerHTML = "";
+  const chars = Array.from(rawText);
+  chars.forEach((ch, cIdx) => {
+    const span = document.createElement("span");
+    span.className = "char-token" + (/[，。！？“”：；—]/.test(ch) ? " punctuation" : "");
+    span.id = `token-${cIdx}`;
+    span.innerText = ch;
+    screen.appendChild(span);
+  });
+
+  setTimeout(() => positionBoobuOnChar(0), 100);
+
+  // Reaching the last sentence completes the reading stage
+  if (sIdx === stage.sentences.length - 1) {
+    markStageCleared(currentStageIndex);
+  }
+}
+
+function prevSentence() {
+  const stage = STAGES[currentStageIndex];
+  if (sentenceIndex > 0) {
+    sentenceIndex--;
+    displaySentence(stage, sentenceIndex);
+    SFX.playClick();
+  }
+}
+
+function nextSentence() {
+  const stage = STAGES[currentStageIndex];
+  if (sentenceIndex < stage.sentences.length - 1) {
+    sentenceIndex++;
+    displaySentence(stage, sentenceIndex);
+    SFX.playClick();
+  } else {
+    markStageCleared(currentStageIndex);
+    showToast("🎉 本篇章已精读完毕！已解锁下一关！");
+    SFX.playCorrect();
+  }
+}
+
+function positionBoobuOnChar(charIndex) {
+  const pacer = document.getElementById("bookworm-pacer");
+  const token = document.getElementById(`token-${charIndex}`);
+  if (!pacer || !token) return;
+
+  const arenaRect = arena.getBoundingClientRect();
+  const tokenRect = token.getBoundingClientRect();
+
+  const targetX = tokenRect.left - arenaRect.left + (tokenRect.width / 2) - 43;
+  const targetY = tokenRect.top - arenaRect.top - 62;
+
+  pacer.style.transform = `translate(${targetX}px, ${targetY}px)`;
+}
+
+function speakCurrentSentence() {
+  const stage = STAGES[currentStageIndex];
+  const sentence = stage.sentences[sentenceIndex];
+  stopAllAudio();
+
+  const tokens = Array.from(sentence);
+  let activeChar = 0;
+  isSpeaking = true;
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+    currentUtterance = new SpeechSynthesisUtterance(sentence);
+    currentUtterance.lang = "zh-CN";
+    currentUtterance.rate = 0.88;
+
+    const voices = window.speechSynthesis.getVoices();
+    const zhVoice = voices.find(v => v.lang.includes("zh") || v.lang.includes("cmn"));
+    if (zhVoice) currentUtterance.voice = zhVoice;
+
+    currentUtterance.onboundary = () => {
+      const idx = Math.min(tokens.length - 1, activeChar);
+      highlightCharToken(idx);
+      activeChar++;
+    };
+
+    currentUtterance.onend = () => {
+      clearCharHighlights();
+      isSpeaking = false;
+      showToast("⭐ 朗读完毕！");
+    };
+
+    window.speechSynthesis.speak(currentUtterance);
+  }
+
+  const paceSpeed = 230;
+  speechTimer = setInterval(() => {
+    if (activeChar >= tokens.length) {
+      clearInterval(speechTimer);
+      clearCharHighlights();
+      return;
+    }
+    highlightCharToken(activeChar);
+    SFX.playHop();
+    activeChar++;
+  }, paceSpeed);
+}
+
+function highlightCharToken(index) {
+  clearCharHighlights();
+  const token = document.getElementById(`token-${index}`);
+  if (token) {
+    token.classList.add("active-pop");
+    positionBoobuOnChar(index);
+  }
+}
+
+function clearCharHighlights() {
+  document.querySelectorAll(".char-token").forEach(el => el.classList.remove("active-pop"));
+}
+
+function stopAllAudio() {
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+  if (speechTimer) {
+    clearInterval(speechTimer);
+    speechTimer = null;
+  }
+  clearCharHighlights();
+  isSpeaking = false;
+}
+
+/* ==========================================================================
+   BAHAGIAN A (MCQ ITEMS)
+   ========================================================================== */
+function renderMcqStage(stage) {
+  arena.innerHTML = `
+    <div class="minigame-card">
+      <div style="background:linear-gradient(90deg, rgba(30,41,59,0.9), rgba(15,23,42,0.9)); border-left:8px solid var(--neon-blue); padding:16px 22px; border-radius:0 16px 16px 0; font-size:calc(1.35rem * var(--font-scale)); font-weight:bold;">
+        <span style="color:var(--neon-blue);">【试炼目标】</span> ${stage.stem}
+      </div>
+
+      <div class="battle-grid">
+        ${stage.options.map(opt => `
+          <div class="battle-option-card" id="opt-${opt.key}" onclick="handleMcqAnswer('${opt.key}', '${stage.answer}')">
+            <div class="option-badge-jrpg">${opt.key}</div>
+            <div class="option-text-jrpg">${opt.text}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function handleMcqAnswer(selectedKey, correctKey) {
+  const card = document.getElementById(`opt-${selectedKey}`);
+  if (selectedKey === correctKey) {
+    card.style.background = "linear-gradient(135deg, #15803d, #166534)";
+    card.style.borderColor = "#4ade80";
+    SFX.playCorrect();
+    showToast("🎯 命中要害！答案正确！+100 EXP (本关已攻克)");
+    addExp(100);
+    markStageCleared(currentStageIndex);
+  } else {
+    card.classList.add("shatter-rejection");
+    SFX.playWrongHeavy();
+    showToast("🛡️ 招架未果！回答有误，请重新选择！");
+    setTimeout(() => card.classList.remove("shatter-rejection"), 850);
+  }
+}
+
+/* ==========================================================================
+   BAHAGIAN B, C: EVERY SINGLE WORD & PUNCTUATION IS A BLANK
+   ========================================================================== */
+function renderAllBlanksStage(stage) {
+  currentBlankAnswers = {};
+  
+  // Build blank slots for every token
+  let sentenceHtml = "";
+  stage.tokens.forEach(tok => {
+    const slotClass = tok.isPunct ? "blank-slot punct-slot" : "blank-slot word-slot";
+    const placeholder = tok.isPunct ? "[标点]" : `[词块 ${tok.id + 1}]`;
+    sentenceHtml += `
+      <span class="${slotClass}" id="blank-slot-${tok.id}" onclick="openWheelForBlank(${tok.id})">
+        ${placeholder}
+      </span>
+    `;
+  });
+
+  arena.innerHTML = `
+    <div class="cloze-quest-card">
+      <div class="cloze-header">
+        <span style="color:var(--neon-yellow);">【全词块与标点符文试炼】</span> ${stage.stem}
+      </div>
+
+      <div class="cloze-sentence-display" id="cloze-sentence-display">
+        ${sentenceHtml}
+      </div>
+
+      <div class="verify-zone">
+        <button class="verify-btn" onclick="verifyAllBlanksStage()">
+          <span>⚔️ VERIFY / 校验全句答案</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* Open 7-Word Rotating Wheel for a Blank */
+function openWheelForBlank(blankId) {
+  SFX.playClick();
+  activeBlankId = blankId;
+  activeBlankElement = document.getElementById(`blank-slot-${blankId}`);
+
+  const stage = STAGES[currentStageIndex];
+  const tokDef = stage.tokens.find(t => t.id === blankId);
+
+  // Exactly 7 options
+  const sevenOptions = tokDef.options;
+
+  // Render 7 Word Blocks radially on the wheel
+  wheelRing.innerHTML = "";
+  const radius = 230;
+  const count = 7;
+  const step = 360 / count;
+
+  sevenOptions.forEach((word, i) => {
+    const angle = i * step;
+    const rad = (angle * Math.PI) / 180;
+    const x = 300 + radius * Math.cos(rad);
+    const y = 300 + radius * Math.sin(rad);
+
+    const node = document.createElement("div");
+    node.className = "wheel-word-node";
+    node.style.left = `${x}px`;
+    node.style.top = `${y}px`;
+    node.innerText = word;
+    node.onclick = (e) => {
+      e.stopPropagation();
+      pickWordFromWheel(word);
+    };
+    wheelRing.appendChild(node);
+  });
+
+  wheelModal.style.display = "flex";
+}
+
+function closeWheelModal() {
+  SFX.playClick();
+  wheelModal.style.display = "none";
+}
+
+function spinWheelManual() {
+  SFX.playClick();
+  wheelRotationDegrees += 51.4; // 360 / 7
+  wheelRing.style.transform = `rotate(${wheelRotationDegrees}deg)`;
+}
+
+function pickWordFromWheel(selectedWord) {
+  SFX.playClick();
+  currentBlankAnswers[activeBlankId] = selectedWord;
+  activeBlankElement.innerText = selectedWord;
+  activeBlankElement.classList.add("filled");
+  activeBlankElement.classList.remove("shatter-rejection");
+  closeWheelModal();
+}
+
+/* VERIFY ACTION: STRICT VALIDATION WITHOUT ANY HINTS */
+function verifyAllBlanksStage() {
+  const stage = STAGES[currentStageIndex];
+  const tokens = stage.tokens;
+
+  // Check if every blank has been viewed and filled
+  const unfilled = tokens.some(t => !currentBlankAnswers[t.id]);
+  if (unfilled) {
+    SFX.playWrongHeavy();
+    showToast("⚠️ 请先将句子中的每一个词块与标点槽位全部装填完毕！");
+    return;
+  }
+
+  let hasError = false;
+
+  tokens.forEach(t => {
+    const userVal = currentBlankAnswers[t.id];
+    const slotEl = document.getElementById(`blank-slot-${t.id}`);
+
+    // Strictly verify without giving hints
+    if (userVal !== t.answer) {
+      hasError = true;
+      slotEl.classList.remove("success-pulse");
+      slotEl.classList.add("shatter-rejection");
+    } else {
+      slotEl.classList.remove("shatter-rejection");
+      slotEl.classList.add("success-pulse");
+    }
+  });
+
+  if (hasError) {
+    document.body.classList.add("screen-blast-shake");
+    setTimeout(() => document.body.classList.remove("screen-blast-shake"), 600);
+    SFX.playWrongHeavy();
+    showToast("❌ 校验失败！高亮红色的词块或标点产生了能量排斥！");
+  } else {
+    SFX.playCorrect();
+    showToast("🌟 符文完全共鸣！整句校验全对！+200 EXP (本关已攻克)");
+    addExp(200);
+    markStageCleared(currentStageIndex);
+  }
+}
+
+/* ==========================================================================
+   BAHAGIAN D: REARRANGING THE WORD BLOCKS INTO A CORRECT SENTENCE PRACTICE
+   ========================================================================== */
+function renderReorderStage(stage) {
+  // Initialize blocks
+  currentReorderPlaced = [];
+  currentReorderPool = [...stage.scrambledBlocks];
+
+  arena.innerHTML = `
+    <div class="reorder-quest-card">
+      <div class="reorder-header">
+        <span style="color:var(--neon-yellow);">【词块语序重构试炼】</span> ${stage.stem}
+      </div>
+
+      <div style="width:100%;">
+        <div class="reorder-zone-title">📍 已组装的句子区域 (点击词块可撤回)：</div>
+        <div class="reorder-target-zone empty-tip" id="reorder-target-zone"></div>
+      </div>
+
+      <div style="width:100%;">
+        <div class="reorder-zone-title">🗃️ 待选取的词块池 (点击词块放入上方组句)：</div>
+        <div class="reorder-pool-zone" id="reorder-pool-zone"></div>
+      </div>
+
+      <div class="verify-zone">
+        <button class="smart-btn" style="min-width:140px; min-height:64px; font-size:1.15rem;" onclick="resetReorderStage()">
+          ↺ 重置本句
+        </button>
+        <button class="verify-btn" onclick="verifyReorderStage()">
+          <span>⚔️ VERIFY / 校验句子排序</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  renderReorderElements();
+}
+
+function renderReorderElements() {
+  const targetZone = document.getElementById("reorder-target-zone");
+  const poolZone = document.getElementById("reorder-pool-zone");
+
+  if (!targetZone || !poolZone) return;
+
+  targetZone.innerHTML = "";
+  poolZone.innerHTML = "";
+
+  if (currentReorderPlaced.length === 0) {
+    targetZone.classList.add("empty-tip");
+  } else {
+    targetZone.classList.remove("empty-tip");
+  }
+
+  currentReorderPlaced.forEach((word, idx) => {
+    const chip = document.createElement("div");
+    chip.className = "word-chip placed";
+    chip.innerText = word;
+    chip.onclick = () => returnWordToPool(idx);
+    targetZone.appendChild(chip);
+  });
+
+  currentReorderPool.forEach((word, idx) => {
+    const chip = document.createElement("div");
+    chip.className = "word-chip";
+    chip.innerText = word;
+    chip.onclick = () => placeWordToTarget(idx);
+    poolZone.appendChild(chip);
+  });
+}
+
+function placeWordToTarget(poolIdx) {
+  SFX.playClick();
+  const word = currentReorderPool.splice(poolIdx, 1)[0];
+  currentReorderPlaced.push(word);
+  renderReorderElements();
+}
+
+function returnWordToPool(placedIdx) {
+  SFX.playClick();
+  const word = currentReorderPlaced.splice(placedIdx, 1)[0];
+  currentReorderPool.push(word);
+  renderReorderElements();
+}
+
+function resetReorderStage() {
+  SFX.playClick();
+  const stage = STAGES[currentStageIndex];
+  currentReorderPlaced = [];
+  currentReorderPool = [...stage.scrambledBlocks];
+  renderReorderElements();
+  showToast("🔄 词块已重置！请重新组句。");
+}
+
+function verifyReorderStage() {
+  const stage = STAGES[currentStageIndex];
+
+  // Must use every single word block
+  if (currentReorderPool.length > 0 || currentReorderPlaced.length < stage.correctBlocks.length) {
+    SFX.playWrongHeavy();
+    showToast("⚠️ 试炼要求：必须将所有词块全部使用完毕后，方可进行校验！");
+    return;
+  }
+
+  const userSentence = currentReorderPlaced.join("");
+  const correctSentence = stage.correctBlocks.join("");
+
+  const targetChips = document.querySelectorAll("#reorder-target-zone .word-chip");
+
+  if (userSentence === correctSentence) {
+    targetChips.forEach(chip => {
+      chip.classList.remove("shatter-rejection");
+      chip.classList.add("success-pulse");
+    });
+    SFX.playCorrect();
+    showToast("🌟 逻辑严谨，排序完全正确！+150 EXP (本关已攻克)");
+    addExp(150);
+    markStageCleared(currentStageIndex);
+  } else {
+    document.body.classList.add("screen-blast-shake");
+    setTimeout(() => document.body.classList.remove("screen-blast-shake"), 600);
+    targetChips.forEach(chip => {
+      chip.classList.add("shatter-rejection");
+    });
+    SFX.playWrongHeavy();
+    showToast("❌ 语序有误，句意不合逻辑！请点击词块撤回并重新尝试！");
+    setTimeout(() => {
+      targetChips.forEach(chip => chip.classList.remove("shatter-rejection"));
+    }, 850);
+  }
+}
+
+/* ==========================================================================
+   GRAND FINALE & OFFICIAL STUDENT PDF GENERATION
+   ========================================================================== */
+function renderFinaleStage(stage) {
+  SFX.playCorrect();
+  sessionTimes.endObj = getMalaysiaDate();
+  markStageCleared(currentStageIndex);
+
+  let numButtonsHtml = ROSTER_6M.map(s => `
+    <button class="cert-num-btn" onclick="generateStudentCertPDF(${s.no})">
+      <span class="num-tag">${s.no}号</span>
+      <span>${s.zh}</span>
+    </button>
+  `).join("");
+
+  arena.innerHTML = `
+    <div class="reading-quest-card" style="text-align:center; border-color:#22c55e; max-height:86vh; overflow-y:auto;">
+      <div style="font-size:3.8rem; margin:6px 0;">👑</div>
+      <div style="font-size:2.2rem; font-weight:900; color:var(--neon-yellow);">${stage.title}</div>
+      <div style="font-size:1.15rem; margin:10px 0; line-height:1.6; color:#f8fafc;">
+        ${stage.stem}<br>
+        全班勇者凭借扎实学力，完整攻克甲、乙、丙、丁全套试题！<br>
+        <strong>📜 请在下方点击自己的学号，即刻生成并下载个人专属的《华文网课试炼证明单》PDF：</strong>
+      </div>
+
+      <div class="cert-number-grid">
+        ${numButtonsHtml}
+      </div>
+
+      <div style="margin-top:18px;">
+        <button class="verify-btn" style="min-width:200px; height:58px; font-size:1.15rem; margin:0 auto;" onclick="warpToStage(0)">
+          🔄 重新温故试炼
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* Client-side Zero-dependency PDF Generator (Canvas to Standard PDF 1.4) */
+function generateStudentCertPDF(studentNo) {
+  SFX.playClick();
+  const student = ROSTER_6M.find(s => s.no === studentNo);
+  if (!student) return;
+
+  const c = document.createElement("canvas");
+  c.width = 1600;
+  c.height = 1140;
+  const ctx = c.getContext("2d");
+
+  // Certificate Background & Epic Frames
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, 1600, 1140);
+
+  ctx.lineWidth = 14;
+  ctx.strokeStyle = "#0f172a";
+  ctx.strokeRect(30, 30, 1540, 1080);
+
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "#d97706";
+  ctx.strokeRect(50, 50, 1500, 1040);
+
+  // Top Crimson Header Bar
+  ctx.fillStyle = "#1e1b4b";
+  ctx.fillRect(50, 50, 1500, 30);
+  ctx.fillStyle = "#d97706";
+  ctx.fillRect(50, 80, 1500, 6);
+
+  // Title
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#991b1b";
+  ctx.font = "bold 52px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  ctx.fillText("六年级华文科 · UASA 026 勇者试炼研习证明单", 800, 175);
+
+  // Intro Subtitle
+  ctx.fillStyle = "#0f172a";
+  ctx.font = "32px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  ctx.fillText("特此证明：本班以下同学已依时上线，全程独立研习并通过华文试炼全部关卡：", 800, 275);
+
+  // Central Dossier Card
+  ctx.fillStyle = "#f8fafc";
+  ctx.fillRect(140, 325, 1320, 480);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#cbd5e1";
+  ctx.strokeRect(140, 325, 1320, 480);
+
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#1e293b";
+  ctx.font = "31px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+
+  ctx.fillText(`👤 学生姓名：${student.zh}（学号：${student.no} 号 | ${student.en}）`, 180, 395);
+  ctx.fillText(`🏫 班级年级：六年级 M 班（6M 班）`, 180, 465);
+  ctx.fillText(`📅 研习日期：${sessionTimes.formattedDate}`, 180, 535);
+  ctx.fillText(`⏱️ 上课时段：马来西亚标准时间 ${sessionTimes.formattedStart} 至 ${sessionTimes.formattedEnd}`, 180, 605);
+  ctx.fillText(`⌛ 研习状态：全流程无跳关、自主攻克全部篇章重构与试题`, 180, 675);
+  ctx.fillText(`⭐ 考核成绩：100% 满分（S级卓越通关 · 词句标点神级掌控）`, 180, 745);
+
+  // Curriculum Coverage Note
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#334155";
+  ctx.font = "25px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  ctx.fillText("涵盖考标：甲组(完璧归赵理解与客观题) · 乙组(阿喜的花篮全盘重构) · 丙组(感恩作文) · 丁组(篇章5句重构)", 800, 855);
+
+  // Teacher Sign & Remarks
+  ctx.textAlign = "left";
+  ctx.fillStyle = "#0f172a";
+  ctx.font = "bold 30px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  ctx.fillText("老师评语：", 180, 935);
+
+  ctx.font = "28px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  ctx.fillStyle = "#15803d";
+  ctx.fillText("“字斟句酌，足智多谋！为你扎实的华文功底与坚持不懈的探究精神点赞！”", 320, 935);
+
+  ctx.textAlign = "right";
+  ctx.fillStyle = "#0f172a";
+  ctx.font = "bold 32px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  ctx.fillText("6M 班华文科任老师 谨签", 1360, 1015);
+  ctx.font = "26px -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif";
+  ctx.fillStyle = "#64748b";
+  ctx.fillText(`签发时间：${sessionTimes.formattedDate}`, 1360, 1060);
+
+  // Red Examination Certified Seal
+  ctx.save();
+  ctx.translate(1380, 915);
+  ctx.rotate(-0.08);
+  ctx.strokeStyle = "#dc2626";
+  ctx.lineWidth = 5;
+  ctx.strokeRect(-110, -45, 220, 90);
+  ctx.fillStyle = "#dc2626";
+  ctx.font = "bold 28px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("华文研习查讫", 0, -5);
+  ctx.fillText("成绩 100%", 0, 30);
+  ctx.restore();
+
+  // Export to Real PDF
+  const imgData = c.toDataURL("image/jpeg", 0.92);
+  const pdfBlob = createRawPdfFromImage(imgData, 1600, 1140);
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(pdfBlob);
+  link.download = `6M班_${student.no}号_${student.zh}_UASA026华文试炼证明单.pdf`;
+  link.click();
+
+  SFX.playCorrect();
+  showToast(`🎉 已成功生成 ${student.zh} 同学的华文试炼证明单 PDF！`);
+}
+
+function createRawPdfFromImage(dataUrl, w, h) {
+  const base64 = dataUrl.split(',')[1];
+  const binaryImg = atob(base64);
+  const imgLen = binaryImg.length;
+  const imgBytes = new Uint8Array(imgLen);
+  for (let i = 0; i < imgLen; i++) imgBytes[i] = binaryImg.charCodeAt(i);
+
+  const ptW = 842;
+  const ptH = 595;
+
+  const header = "%PDF-1.4\n";
+  const obj1 = "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+  const obj2 = "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+  const obj3 = `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${ptW} ${ptH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`;
+  const obj4Header = `4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${w} /Height ${h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgLen} >>\nstream\n`;
+  const obj4Footer = "\nendstream\nendobj\n";
+
+  const streamContent = `q ${ptW} 0 0 ${ptH} 0 0 cm /Im0 Do Q`;
+  const obj5 = `5 0 obj\n<< /Length ${streamContent.length} >>\nstream\n${streamContent}\nendstream\nendobj\n`;
+
+  const enc = new TextEncoder();
+  const p1 = enc.encode(header + obj1 + obj2 + obj3 + obj4Header);
+  const p2 = imgBytes;
+  const p3 = enc.encode(obj4Footer + obj5);
+
+  const offset1 = header.length;
+  const offset2 = offset1 + obj1.length;
+  const offset3 = offset2 + obj2.length;
+  const offset4 = offset3 + obj3.length;
+  const offset5 = offset4 + obj4Header.length + imgLen + obj4Footer.length;
+  const xrefOffset = offset5 + obj5.length;
+
+  const xref = `xref\n0 6\n0000000000 65535 f \n` +
+    `${("0000000000" + offset1).slice(-10)} 00000 n \n` +
+    `${("0000000000" + offset2).slice(-10)} 00000 n \n` +
+    `${("0000000000" + offset3).slice(-10)} 00000 n \n` +
+    `${("0000000000" + offset4).slice(-10)} 00000 n \n` +
+    `${("0000000000" + offset5).slice(-10)} 00000 n \n` +
+    `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+  const p4 = enc.encode(xref);
+  return new Blob([p1, p2, p3, p4], { type: "application/pdf" });
+}
+</script>
+</body>
+</html>
