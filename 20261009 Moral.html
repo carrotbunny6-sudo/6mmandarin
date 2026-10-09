@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SJKC NAN HWA 六年级道德教育·灵林营地品德求索</title>
+<style>
+  :root {
+    --font-rounded: 'Comfortaa', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'YouYuan', '幼圆', sans-serif;
+    --font-base-size: 26px;
+    --bg-theme: #fdf6ec; /* Cozy Grove 羊皮暖阳 */
+    --text-theme: #2d241e;
+    --card-bg: #fffdf9;
+    --card-border: #795548;
+    --btn-border: #4e342e;
+    --accent-color: #d87d4a; /* 温暖营火橙 */
+    --accent-light: #faede2;
+    --spirit-glow: rgba(216, 125, 74, 0.25);
+    --container-max-width: 900px;
+  }
+
+  /* 布局适配：手机版 vs 桌面版 */
+  body.layout-phone {
+    --container-max-width: 480px;
+    --font-base-size: 22px;
+    padding: 10px 8px 80px 8px;
+  }
+  body.layout-desktop {
+    --container-max-width: 920px;
+    --font-base-size: 26px;
+    padding: 20px 16px 90px 16px;
+  }
+
+  /* 高对比度模式（星夜灵火黑金） */
+  body.theme-high-contrast {
+    --bg-theme: #141216;
+    --text-theme: #fff9c4;
+    --card-bg: #211c24;
+    --card-border: #ffd54f;
+    --btn-border: #ffd54f;
+    --accent-color: #ffd54f;
+    --accent-light: #2e2615;
+    --spirit-glow: rgba(255, 213, 79, 0.35);
+  }
+
+  /* 舒缓模式（苔藓晨露水彩） */
+  body.theme-moss {
+    --bg-theme: #edf4ed;
+    --text-theme: #1b3022;
+    --card-bg: #f9fbf9;
+    --card-border: #386641;
+    --btn-border: #214028;
+    --accent-color: #588157;
+    --accent-light: #e0ece0;
+    --spirit-glow: rgba(88, 129, 87, 0.25);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-rounded);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg-theme);
+    color: var(--text-theme);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: var(--font-base-size);
+    user-select: none;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* 截屏/切屏时触发的全屏瞬时黑屏防窥层 */
+  #blackoutGuard {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000 !important;
+    z-index: 2147483647;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-align: center;
+    padding: 24px;
+  }
+  #blackoutGuard h1 {
+    font-size: 36px;
+    color: #ff5252;
+    margin-bottom: 20px;
+  }
+  #blackoutGuard p {
+    font-size: 22px;
+    max-width: 600px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: #eeeeee;
+  }
+  .resume-btn {
+    background: #ffd54f;
+    color: #121212;
+    border: none;
+    border-radius: 999px;
+    padding: 14px 38px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  /* 打印时自动隐藏界面 */
+  @media print {
+    body > *:not(#printCertContainer) { display: none !important; }
+    #printCertContainer { display: block !important; width: 100%; }
+  }
+
+  /* 起始端布局选择模态框 */
+  #layoutModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(20, 16, 12, 0.88);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-box {
+    background: var(--card-bg);
+    border: 4.5px solid var(--card-border);
+    border-radius: 36px;
+    padding: 40px 32px;
+    max-width: 540px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  }
+  .modal-title {
+    font-size: 28px;
+    font-weight: 900;
+    margin-bottom: 14px;
+    color: var(--accent-color);
+  }
+  .modal-desc {
+    font-size: 20px;
+    opacity: 0.88;
+    margin-bottom: 30px;
+    line-height: 1.5;
+  }
+  .layout-choice-btn {
+    width: 100%;
+    padding: 18px 24px;
+    font-size: 22px;
+    font-weight: 900;
+    border-radius: 999px;
+    border: 3.5px solid var(--btn-border);
+    background: var(--accent-light);
+    color: var(--text-theme);
+    cursor: pointer;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .layout-choice-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 20px var(--spirit-glow);
+  }
+
+  /* 顶栏控制栏 */
+  .top-bar {
+    position: sticky;
+    top: 10px;
+    z-index: 1000;
+    width: 100%;
+    max-width: var(--container-max-width);
+    background: var(--card-bg);
+    border: 3.5px solid var(--btn-border);
+    border-radius: 999px;
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    gap: 8px;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .pill-btn {
+    background: var(--accent-light);
+    color: var(--text-theme);
+    border: 2px solid var(--btn-border);
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  /* 进度指示区 */
+  .progress-section {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin-bottom: 16px;
+  }
+  .progress-shell {
+    width: 100%;
+    height: 18px;
+    background: rgba(0,0,0,0.1);
+    border: 2.5px solid var(--btn-border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    width: 3.3%;
+    background: linear-gradient(90deg, #a3b18a, #f4a261, #e76f51);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+  .status-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 19px;
+    font-weight: 900;
+    margin-top: 6px;
+  }
+
+  /* 答题主卡片 */
+  .quest-card {
+    width: 100%;
+    max-width: var(--container-max-width);
+    background: var(--card-bg);
+    border: 4.5px solid var(--card-border);
+    border-radius: 36px;
+    padding: 32px 28px;
+    box-shadow: 0 16px 40px var(--spirit-glow);
+    position: relative;
+  }
+
+  .mode-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 20px;
+    border-radius: 999px;
+    background: var(--accent-color);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 900;
+    margin-bottom: 18px;
+  }
+  body.theme-high-contrast .mode-indicator { color: #121212; }
+
+  /* 听力题专属：卡通学霸蜜蜂导读者 */
+  .nerdy-bee-container {
+    background: #fff8e1;
+    border: 3.5px dashed #f57f17;
+    border-radius: 28px;
+    padding: 16px 20px;
+    margin-bottom: 22px;
+    display: none;
+    align-items: center;
+    gap: 20px;
+  }
+  body.theme-high-contrast .nerdy-bee-container {
+    background: #282208;
+    border-color: #ffd54f;
+  }
+  .bee-avatar {
+    width: 76px;
+    height: 76px;
+    flex-shrink: 0;
+    animation: beeFloat 2s ease-in-out infinite alternate;
+  }
+  @keyframes beeFloat {
+    0% { transform: translateY(0) rotate(-2deg); }
+    100% { transform: translateY(-7px) rotate(3deg); }
+  }
+  .bee-info {
+    flex-grow: 1;
+  }
+  .bee-guide-title {
+    font-size: 20px;
+    font-weight: 900;
+    color: #e65100;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  body.theme-high-contrast .bee-guide-title { color: #ffd54f; }
+  .soundwave-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 24px;
+    margin-top: 8px;
+  }
+  .sound-bar {
+    width: 6px;
+    height: 8px;
+    background: #f57f17;
+    border-radius: 999px;
+    transition: height 0.15s ease;
+  }
+  .soundwave-box.active .sound-bar {
+    animation: barPulse 0.5s ease-in-out infinite alternate;
+  }
+  .soundwave-box.active .sound-bar:nth-child(2) { animation-delay: 0.1s; }
+  .soundwave-box.active .sound-bar:nth-child(3) { animation-delay: 0.2s; }
+  .soundwave-box.active .sound-bar:nth-child(4) { animation-delay: 0.3s; }
+  .soundwave-box.active .sound-bar:nth-child(5) { animation-delay: 0.4s; }
+  @keyframes barPulse {
+    0% { height: 6px; }
+    100% { height: 24px; }
+  }
+
+  /* 题干排印 */
+  .quest-stem {
+    font-size: calc(var(--font-base-size) * 1.12);
+    font-weight: 900;
+    line-height: 1.65;
+    margin-bottom: 26px;
+  }
+
+  /* 选项列表（无字母编号，仅纯净选项卡片） */
+  .options-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .option-row {
+    background: var(--card-bg);
+    border: 3.5px solid var(--btn-border);
+    border-radius: 24px;
+    padding: 18px 24px;
+    min-height: 72px;
+    font-size: var(--font-base-size);
+    font-weight: 900;
+    color: var(--text-theme);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    transition: all 0.15s ease;
+  }
+  .option-row:hover:not(:disabled) {
+    background: var(--accent-light);
+    transform: translateY(-2px);
+  }
+
+  .opt-text {
+    flex-grow: 1;
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  /* 听力题收听按钮 */
+  .listen-opt-btn {
+    background: var(--accent-color);
+    color: white;
+    border: 2px solid var(--btn-border);
+    border-radius: 999px;
+    padding: 10px 22px;
+    font-size: 18px;
+    font-weight: 900;
+    cursor: pointer;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  body.theme-high-contrast .listen-opt-btn { color: #121212; }
+
+  /* 作答正确与错误反馈状态 */
+  .option-row.correct {
+    border-color: #2e7d32 !important;
+    background: #e8f5e9 !important;
+    color: #1b5e20 !important;
+  }
+  body.theme-high-contrast .option-row.correct {
+    border-color: #69f0ae !important;
+    background: #003314 !important;
+    color: #b9f6ca !important;
+  }
+  .option-row.wrong {
+    border-color: #c62828 !important;
+    background: #ffebee !important;
+    color: #b71c1c !important;
+  }
+  body.theme-high-contrast .option-row.wrong {
+    border-color: #ff5252 !important;
+    background: #3b0505 !important;
+    color: #ff8a80 !important;
+  }
+
+  /* 反馈抽屉 */
+  .feedback-box {
+    margin-top: 24px;
+    padding: 22px 24px;
+    border-radius: 24px;
+    border: 3.5px dashed var(--accent-color);
+    background: var(--accent-light);
+    display: none;
+  }
+  .feedback-text {
+    font-size: 20px;
+    line-height: 1.65;
+    margin-bottom: 20px;
+  }
+  .btn-next-wrap {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .proceed-btn {
+    background: var(--accent-color);
+    color: white;
+    border: 3px solid var(--btn-border);
+    border-radius: 999px;
+    padding: 14px 36px;
+    font-size: 22px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  body.theme-high-contrast .proceed-btn { color: #121212; }
+
+  /* ==================== 泡泡玛特 (Pop-Mart) 27 位同学盲盒学号界面 ==================== */
+  #popMartCelebration {
+    display: none;
+    width: 100%;
+    max-width: var(--container-max-width);
+    text-align: center;
+    background: var(--card-bg);
+    border: 5px solid var(--card-border);
+    border-radius: 40px;
+    padding: 40px 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  }
+  .popmart-header h2 {
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    color: #ff4081;
+  }
+  .popmart-header p {
+    font-size: 21px;
+    margin-bottom: 28px;
+    opacity: 0.9;
+  }
+  .popmart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    max-height: 480px;
+    overflow-y: auto;
+    padding: 16px;
+    border-radius: 28px;
+    background: rgba(0,0,0,0.03);
+    border: 3px dashed #ff80ab;
+    margin-bottom: 28px;
+  }
+  .popmart-card {
+    border-radius: 24px;
+    border: 3.5px solid #ffffff;
+    padding: 16px 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15), inset 0 3px 6px rgba(255,255,255,0.7), inset 0 -4px 6px rgba(0,0,0,0.2);
+    transition: all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-shadow: 0 1.5px 3px rgba(0,0,0,0.25);
+    color: #ffffff;
+  }
+  .popmart-card:hover {
+    transform: translateY(-5px) scale(1.04);
+  }
+  .popmart-card:active {
+    transform: scale(0.95);
+  }
+  .popmart-no-badge {
+    background: rgba(0,0,0,0.2);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+  .popmart-name-zh {
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .popmart-name-en {
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.3;
+    opacity: 0.95;
+    text-align: center;
+    word-break: break-word;
+  }
+
+  /* 证书生成与即时预览弹窗 */
+  #certModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.82);
+    z-index: 1000000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .cert-modal-content {
+    background: #ffffff;
+    border: 4px solid var(--btn-border);
+    border-radius: 32px;
+    max-width: 680px;
+    width: 100%;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    overflow-y: auto;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+  }
+  .cert-preview-img {
+    width: 100%;
+    max-height: 480px;
+    object-fit: contain;
+    border: 3px solid #ddd;
+    border-radius: 18px;
+    margin: 16px 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  .cert-btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* 隐藏用于绘制 PDF 的高分辨率 Canvas */
+  #pdfRenderCanvas {
+    display: none;
+  }
+</style>
+</head>
+<body class="layout-desktop">
+
+<!-- 截屏/切屏时触发的全屏瞬时黑屏防窥层 -->
+<div id="blackoutGuard">
+  <h1>⚠️ 学习防窥与视力保护启动</h1>
+  <p>系统检测到截屏、窗口切换或外部录屏动作。为了杜绝截屏向 AI 搜题作弊并呵护高度近视视力，界面已立即黑屏隐匿。</p>
+  <button class="resume-btn" onclick="dismissBlackout()">点击返回继续沉浸答题 ↺</button>
+</div>
+
+<!-- 起始端布局选择模态框 -->
+<div id="layoutModal">
+  <div class="modal-box">
+    <h2 class="modal-title">🏕️ 灵林营地：请选择设备布局</h2>
+    <p class="modal-desc">为六年级高度近视学习者定制的柔和营地视界</p>
+    <button class="layout-choice-btn" onclick="setLayout('phone')">
+      <span>📱 手机专属版（大字体·自适应手势）</span>
+    </button>
+    <button class="layout-choice-btn" onclick="setLayout('desktop')">
+      <span>💻 电脑宽屏版（阔绰间距·防眩光）</span>
+    </button>
+  </div>
+</div>
+
+<!-- 证书即时预览与下载中心模态框 -->
+<div id="certModal">
+  <div class="cert-modal-content">
+    <h2 style="font-size:26px; font-weight:900; color:#1b5e20;">🎉 研学凭证已成功生成！</h2>
+    <p style="font-size:18px; color:#555; margin-top:4px;">系统已为您触发 PDF 下载。若浏览器未自动弹出保存提示，请点击下方按键：</p>
+    
+    <img id="certPreviewImage" class="cert-preview-img" alt="证书预览">
+
+    <div class="cert-btn-group">
+      <button class="pill-btn" style="background:#2e7d32; color:#fff; font-size:20px; padding:12px 24px;" onclick="triggerDirectPdfDownload()">📥 重新下载 PDF 凭证</button>
+      <button class="pill-btn" style="background:#ff9800; color:#fff; font-size:20px; padding:12px 24px;" onclick="downloadCertImage()">🖼️ 保存高清证书图</button>
+      <button class="pill-btn" style="background:#0288d1; color:#fff; font-size:20px; padding:12px 24px;" onclick="printCertificate()">🖨️ 直接打印凭证</button>
+      <button class="pill-btn" style="background:#757575; color:#fff; font-size:20px; padding:12px 24px;" onclick="closeCertModal()">关闭窗口</button>
+    </div>
+  </div>
+</div>
+
+<!-- 顶栏控制栏 -->
+<div class="top-bar">
+  <div class="control-group">
+    <button class="pill-btn" onclick="adjustSize(-2)">A-</button>
+    <button class="pill-btn" onclick="adjustSize(2)">A+</button>
+    <button class="pill-btn" onclick="toggleContrast()">👁️ 切换配色</button>
+  </div>
+  <div class="control-group">
+    <button class="pill-btn" onclick="replayStemAudio()">🔊 听题干</button>
+    <!-- 带有专属密码锁的快速测试直达通道 -->
+    <button class="pill-btn" style="background:#fff3e0; color:#e65100; border-color:#ff9800;" onclick="skipToCertForTesting()">⚡ 快速测试直达</button>
+  </div>
+</div>
+
+<!-- 进度指示 -->
+<div class="progress-section">
+  <div class="progress-shell">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="status-row">
+    <span id="questCounterText">第 1 / 30 题</span>
+    <span id="scoreText">初始得分：0</span>
+  </div>
+</div>
+
+<!-- 答题主卡片 -->
+<div class="quest-card" id="questCard">
+  <div class="mode-indicator" id="modeBadge">📖 阅读理解题</div>
+
+  <!-- 听力题专属：卡通学霸蜜蜂视觉导读者 -->
+  <div class="nerdy-bee-container" id="nerdyBeeBox">
+    <svg class="bee-avatar" viewBox="0 0 100 100">
+      <ellipse cx="32" cy="24" rx="16" ry="10" fill="#e0f7fa" opacity="0.8" transform="rotate(-30 32 24)"/>
+      <ellipse cx="68" cy="24" rx="16" ry="10" fill="#e0f7fa" opacity="0.8" transform="rotate(30 68 24)"/>
+      <ellipse cx="50" cy="55" rx="30" ry="24" fill="#fbc02d"/>
+      <path d="M35 42 Q50 46 65 42 L63 50 Q50 54 37 50 Z" fill="#212121"/>
+      <path d="M38 58 Q50 62 62 58 L59 66 Q50 70 41 66 Z" fill="#212121"/>
+      <path d="M42 32 Q35 15 28 20" stroke="#212121" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M58 32 Q65 15 72 20" stroke="#212121" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <circle cx="28" cy="20" r="3.5" fill="#e91e63"/>
+      <circle cx="72" cy="20" r="3.5" fill="#e91e63"/>
+      <circle cx="40" cy="48" r="10" stroke="#212121" stroke-width="3" fill="#ffffff"/>
+      <circle cx="60" cy="48" r="10" stroke="#212121" stroke-width="3" fill="#ffffff"/>
+      <line x1="50" y1="48" x2="50" y2="48" stroke="#212121" stroke-width="3"/>
+      <circle cx="41" cy="48" r="4.5" fill="#212121"/>
+      <circle cx="61" cy="48" r="4.5" fill="#212121"/>
+      <circle cx="43" cy="46" r="1.5" fill="#ffffff"/>
+      <circle cx="63" cy="46" r="1.5" fill="#ffffff"/>
+      <circle cx="32" cy="56" r="4" fill="#ff80ab" opacity="0.6"/>
+      <circle cx="68" cy="56" r="4" fill="#ff80ab" opacity="0.6"/>
+      <path d="M46 58 Q50 63 54 58" stroke="#212121" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    </svg>
+    <div class="bee-info">
+      <div class="bee-guide-title">
+        <span>🐝 灵林蜜蜂导读员正在为你读题：</span>
+      </div>
+      <div style="font-size:18px; font-weight:800; opacity:0.85;">
+        请点击下方卡片上的【🔊 试听语音】辨别选项并作答。
+      </div>
+      <div class="soundwave-box" id="beeSoundwave">
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+        <div class="sound-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 题干 -->
+  <div class="quest-stem" id="questStemText">加载题目中...</div>
+
+  <!-- 选项列表（无字母编号，仅纯净选项卡片） -->
+  <div class="options-box" id="optionsBox"></div>
+
+  <!-- 作答反馈板 -->
+  <div class="feedback-box" id="feedbackBox">
+    <div class="feedback-text" id="feedbackText"></div>
+    <div class="btn-next-wrap">
+      <button class="proceed-btn" id="nextBtn" onclick="onProceedNext()">收集灵魄余烬，继续前行 ➜</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 泡泡玛特 (Pop-Mart) 27 位同学专属盲盒界面 ==================== -->
+<div id="popMartCelebration">
+  <div class="popmart-header">
+    <h2>🏕️ 30 道道德价值大考验圆满通关！</h2>
+    <p>请在下方潮玩盲盒卡牌中，找到并点击你的【姓名与学号】下载 SJKC NAN HWA 道德教育官方研学凭证 PDF：</p>
+  </div>
+  <div class="popmart-grid" id="popMartGrid"></div>
+</div>
+
+<canvas id="pdfRenderCanvas" width="1240" height="1754"></canvas>
+
+<script>
+/* ==================== 1. SJKC NAN HWA 全班 27 位学生花名册 ==================== */
+const CLASS_ROSTER = [
+  { id: 1, en: "ASHRAFF MUHAMMAD DANIEL BIN MOHD NOH", zh: "丹尼尔" },
+  { id: 2, en: "CINDY TOH AN TIAN", zh: "杜安恬" },
+  { id: 3, en: "EDEN LAU", zh: "刘奕堂" },
+  { id: 4, en: "FOO SI SHENG", zh: "符泗盛" },
+  { id: 5, en: "GAN JIE FOHNG", zh: "颜杰丰" },
+  { id: 6, en: "GAN ONG SIN", zh: "颜煌星" },
+  { id: 7, en: "GAN TZI YANG", zh: "颜子杨" },
+  { id: 8, en: "GAN YU XIN", zh: "颜妤欣" },
+  { id: 9, en: "GOH JIA LING", zh: "吴佳琳" },
+  { id: 10, en: "JANICE NGOH WAN ROU", zh: "吴婉柔" },
+  { id: 11, en: "JAYDEN WONG JUN YU", zh: "王军宇" },
+  { id: 12, en: "JENNY ANG", zh: "洪婕宁" },
+  { id: 13, en: "KEVIN TOW WEI CHEN", zh: "杜伟诚" },
+  { id: 14, en: "LAU WEI JIE", zh: "刘伟杰" },
+  { id: 15, en: "LAU ZHI XUAN", zh: "刘智瑄" },
+  { id: 16, en: "LIM ZHI YAANG", zh: "林志旸" },
+  { id: 17, en: "LOH YA XUAN", zh: "罗雅轩" },
+  { id: 18, en: "MUHAMMAD ARIF WAFIY BIN AZMI", zh: "华菲" },
+  { id: 19, en: "NG TIN WEI", zh: "黄庭玮" },
+  { id: 20, en: "NG ZI NING", zh: "黄芷宁" },
+  { id: 21, en: "NIVEDHANRAJ A/L P.SIVARAJ", zh: "尼文" },
+  { id: 22, en: "TAN JAY DEN", zh: "陈济恩" },
+  { id: 23, en: "TAN WEI CHENG", zh: "陈伟承" },
+  { id: 24, en: "TEH ZHI JIN", zh: "郑智谨" },
+  { id: 25, en: "THOR LI JUN", zh: "杜俐君" },
+  { id: 26, en: "TOH WU SIANG", zh: "杜武祥" },
+  { id: 27, en: "WANG HONG YONG", zh: "王宏勇" }
+];
+
+/* ==================== 2. 精炼 30 道高阶题目数据库（各选项字数严格等长） ==================== */
+const RAW_QUESTIONS = [
+  // --- 价值 1：信奉上苍 (1-2) ---
+  {
+    mode: "reading",
+    stem: "马来西亚国家原则第一项为“信奉上苍”。作为多元社会的国民，实践这项原则的首要意义是什么？",
+    correctText: "促使人民心怀敬畏并和睦相处", // 13
+    distractors: [
+      "强制全国人民信奉同一种宗教", // 13
+      "鼓励人们追求物质与财富名利", // 13
+      "要求国民只在节日时才去行善"  // 13
+    ],
+    explanation: "“信奉上苍”引导国民心怀敬畏、遵从向善教义，在多元宗教社会中互相尊重包容，保障国家安定和谐。"
+  },
+  {
+    mode: "listening",
+    stem: "在出席友族的开斋节或屠妖节开放门户聚餐时，下列哪项举止最符合宗教相互尊重的崇高道德？",
+    correctText: "安静等待友人祷告完毕后再交谈", // 14
+    distractors: [
+      "大声催促同桌友人赶紧动手吃饭", // 14
+      "公开挑剔餐桌上的菜肴不合口味", // 14
+      "擅自离席去玩手机游戏打发时间"  // 14
+    ],
+    explanation: "尊重友族的餐前祷告仪式与饮食习惯，不予打扰，体现了对他人信仰的崇高敬意。"
+  },
+
+  // --- 价值 2：善良 (3-4) ---
+  {
+    mode: "reading",
+    stem: "当国家遭遇严重水灾、土崩或疫情危机时，身为国民践行“善良”价值的最佳体现是：",
+    correctText: "各尽所能提供物资援助与精神支持", // 15
+    distractors: [
+      "趁机囤积生活物资并哄抬市场物价", // 15
+      "冷眼旁观甚至在网络上面嘲讽灾民", // 15
+      "到处散播未经官方证实的恐慌谣言"  // 15
+    ],
+    explanation: "国难当前，国民应当休戚与共，通过捐赠、当义工或心理关怀等方式为受难同胞送去温暖。"
+  },
+  {
+    mode: "listening",
+    stem: "小学生虽然经济能力有限，但在国家医疗血库告急时，依然可以通过什么方式支持国家？",
+    correctText: "向身边的成年长辈宣传无偿献血", // 14
+    distractors: [
+      "强行要求父母向医院捐献大笔巨款", // 14
+      "嘲笑去医院献血的爱心人士多管事", // 14
+      "编造血浆被盗卖的虚假新闻吓唬人"  // 14
+    ],
+    explanation: "协助传达有益社会的官方信息，鼓励身边成年人响应号召，也是学生力所能及的善良善行。"
+  },
+
+  // --- 价值 3：负责任 (5-6) ---
+  {
+    mode: "reading",
+    stem: "在日常公共生活中，下列哪项行为是合格公民履行“公民责任”的正确示范？",
+    correctText: "严格遵守交通规则并不占用应急车道", // 16
+    distractors: [
+      "为图一时方便而在公共设施乱涂乱画", // 16
+      "为了抢先到达目的地而随意横穿马路", // 16
+      "在风景优美的国家公园游览乱丢垃圾"  // 16
+    ],
+    explanation: "守法循规、爱护公共设施是每位公民应尽的基础道德与法治责任。"
+  },
+  {
+    mode: "listening",
+    stem: "年满法定年龄的国民，在国家举行大选时认真投出神圣的一票，属于履行哪项责任？",
+    correctText: "履行参与民主进程与建设国家的公民义务", // 18
+    distractors: [
+      "为了跟风凑热闹而随波逐流参与投票打卡", // 18
+      "收受候选人的财物好处后违心投出选票的", // 18
+      "仅仅为了完成打卡任务而随意在票上涂鸦"  // 18
+    ],
+    explanation: "理性、慎重地行使宪法赋予的选举权，是推动国家民主良性发展的核心公民责任。"
+  },
+
+  // --- 价值 4：感谢 (7-8) ---
+  {
+    mode: "reading",
+    stem: "马来西亚拥有得天独厚的世界自然与文化遗产（如姆鲁洞、马六甲古城）。作为国民，我们应如何表达感恩？",
+    correctText: "尽心尽力守护并向外宾宣传独特的多元国宝", // 19
+    distractors: [
+      "在历史古迹的墙壁刻写自己的姓名留下纪念", // 19
+      "将濒危热带雨林中的稀有野生植物挖回自家", // 19
+      "认为国家资源取之不尽因而无需过多节约爱"  // 19
+    ],
+    explanation: "珍惜祖辈流传下来的世界遗产与秀美河山，用行动保护并弘扬其价值，是深沉的感恩之情。"
+  },
+  {
+    mode: "listening",
+    stem: "在多元文化社会中，我们能够享受到椰浆饭、煎饼、海南鸡饭等各族美食，最该常怀何种情感？",
+    correctText: "感恩各民族相互交融所孕育的多元包容之福", // 19
+    distractors: [
+      "贬低其他民族的传统饮食习惯并排斥其文化", // 19
+      "盲目崇拜外国进口食品并嫌弃本地传统小吃", // 19
+      "认为文化丰富纯属理所当然因而不值得珍惜"  // 19
+    ],
+    explanation: "多元文化的绽放是各族先辈长期和睦耕耘的宝贵结晶，常怀感恩才能增进族群和谐。"
+  },
+
+  // --- 价值 5：崇高的品德 (9-10) ---
+  {
+    mode: "reading",
+    stem: "在《仪礼代言人》中，慧丽在国际青少年交流计划中言行得体、受到赞赏。这说明个人品德与国家形象有何关联？",
+    correctText: "国民的个人文明举止直接映射出国家的整体形象", // 21
+    distractors: [
+      "个人品行仅仅关乎自身名誉而与国家荣誉毫不相干", // 21
+      "只要在国际赛场赢得奖牌即使举止粗鲁也无可厚非", // 21
+      "只有政府外交官员在公众场合才需要讲究社交礼仪"  // 21
+    ],
+    explanation: "人人都是国家的代言人；每一位公民在国际场合的温良谦逊，都是国家文明素质最亮丽的名片。"
+  },
+  {
+    mode: "listening",
+    stem: "当我国运动员在国际羽毛球邀请赛中以微弱劣势惜败给对手时，作为高尚品德的践行者，我们应当：",
+    correctText: "保持从容风度并向胜出的对手致以真诚祝贺", // 18
+    distractors: [
+      "在观众席上破口大骂甚至向裁判席投掷杂物", // 18
+      "在互联网上对获胜国选手进行恶意诋毁嘲讽", // 18
+      "当场拒绝出席颁奖典礼以此来表达强烈不满"  // 18
+    ],
+    explanation: "胜不骄、败不馁，尊重裁决并向对手致敬，展现了堂堂正正的大国国民风度与崇高品德。"
+  },
+
+  // --- 价值 6：尊重 (11-12) ---
+  {
+    mode: "reading",
+    stem: "学校每周举行升旗仪式、奏唱国歌《Negaraku》时，在场师生应当如何表现以示尊重？",
+    correctText: "立即肃立并脱帽，神情庄重地齐声唱国歌", // 17
+    distractors: [
+      "一边哼唱一边与身旁的同伴嬉皮笑脸打闹着", // 17
+      "只顾低头摆弄自己的文具书包或者系紧鞋带", // 17
+      "只要没有老师监视就可以坐在原地闭目养神"  // 17
+    ],
+    explanation: "国旗与国歌是国家的最高象征；升国旗奏国歌时端正肃立、齐声高唱，是最基本的尊严表达。"
+  },
+  {
+    mode: "listening",
+    stem: "在《破案小侦探》课文中，班马之所以急忙把国徽带回家，是因为它沾上了泥巴想要清洗干净。这一情节启示我们：",
+    correctText: "保持国家象征的整洁无瑕是尊重国家的真诚体现", // 20
+    distractors: [
+      "只要发现国徽弄脏了就可以擅自据为己有不再归还", // 20
+      "国徽只是普通的金属物件不必花费心思去擦拭清洁", // 20
+      "可以用带有涂鸦或者污渍的残破国徽代表国家机关"  // 20
+    ],
+    explanation: "爱护国徽、国旗的庄严与洁净，是国民内化于心、外化于行的尊重精神。"
+  },
+
+  // --- 价值 7：仁爱 (13-14) ---
+  {
+    mode: "reading",
+    stem: "古训有云：“老吾老以及人之老，幼吾幼以及人之幼。”在爱国仁爱维度上，这句话勉励我们：",
+    correctText: "把对小家庭的关爱推及至全社会各族同胞", // 17
+    distractors: [
+      "只孝顺自己父母而对社区的长辈视若无睹", // 17
+      "因为外人与自己没有血缘关系所以无需相助", // 17
+      "只要自家丰衣足食就不用理睬国家贫困疾苦"  // 17
+    ],
+    explanation: "博爱仁善超越狭隘的血缘藩篱，将亲情挚爱升华为守护同胞、眷顾弱者的广阔爱国情怀。"
+  },
+  {
+    mode: "listening",
+    stem: "在《爱国的马来貘》与课堂讨论中，针对市场上琳琅满目的商品，倡导“仁爱与支持国货”的深远意义是：",
+    correctText: "提振本国产业经济并增加本地劳动就业", // 16
+    distractors: [
+      "盲目排斥一切经过正规途径进口外来商品", // 16
+      "即便本地产品存在严重安全隐患也绝不过", // 16
+      "仅仅为了追求低廉价格而购买假冒伪劣货"  // 16
+    ],
+    explanation: "以实际消费行动购买和推广本国优质产品，能促进国内产业繁荣、凝聚爱国向心力。"
+  },
+
+  // --- 价值 8：公正 (15-16) ---
+  {
+    mode: "reading",
+    stem: "在深广剧本《公正的和谐国》中，大司寇（司法代表）最终严惩犯法的宰相之子，体现的核心法治原则是：",
+    correctText: "法律面前人人平等且王子犯法与庶民同罪", // 18
+    distractors: [
+      "高官贵族子弟只要交纳巨额罚金就可以免罪", // 18
+      "执政者亲朋好友可以拥有超越宪法特权地位", // 18
+      "司法机关必须听从行政官员指令来判决案件"  // 18
+    ],
+    explanation: "司法独立、一视同仁，不因涉案者地位尊贵而枉法徇私，是维系社会公正与公义的根本防线。"
+  },
+  {
+    mode: "listening",
+    stem: "在班级评选优秀三好学生或代表学校参赛的运动员时，身为组长或评委最应恪守的公正原则是：",
+    correctText: "依据真实综合能力选拔而绝不偏袒自己好友", // 18
+    distractors: [
+      "只推荐跟自己平时关系亲密的好朋友入选参赛", // 18
+      "谁送给自己的礼物更加昂贵贵重就推选给谁去", // 18
+      "随便抽签应付了事根本不需要考察选手的实力"  // 18
+    ],
+    explanation: "秉公处事、唯贤是举，不掺杂个人私情私利，才能服众并推动集体健康发展。"
+  },
+
+  // --- 价值 9：勇敢 (17-18) ---
+  {
+    mode: "reading",
+    stem: "在社交网络上发现针对我国疫情或公共政策的恶性造谣、抹黑国誉的假新闻时，小勇士应当：",
+    correctText: "坚决不信谣不传谣并向官方核实平台举报", // 17
+    distractors: [
+      "未经思考便立刻随手转发给身边所有亲友群", // 17
+      "添油加醋编造更惊悚的谣言博取点赞关注度", // 17
+      "觉得事不关己因而任由虚假信息在网络蔓延"  // 17
+    ],
+    explanation: "“谣言止于智者”；勇于抵制并向权威平台（如 Sebenarnya.my）举报假消息，是维护国誉的勇敢之举。"
+  },
+  {
+    mode: "listening",
+    stem: "在国际青少年艺术比赛或体育竞赛中，面对失误或犯规指控，真正的“勇敢”体现为：",
+    correctText: "勇于直面过失并坦诚承担责任而不推诿狡辩", // 18
+    distractors: [
+      "即使众目睽睽证据确凿也咬死不承认自己过错", // 18
+      "立刻大哭大闹并指责裁判故意偏袒针对本国人", // 18
+      "收买对手或在赛后找人私下报复恐吓当值裁判"  // 18
+    ],
+    explanation: "真正的勇敢不仅是对外捍卫荣誉，更是对内敢于正视自身过错、诚恳担当的刚毅人格。"
+  },
+
+  // --- 价值 10：诚实 (19-20) ---
+  {
+    mode: "reading",
+    stem: "在课文《最美丽的外套》中，振凯与纳文的故事生动阐明了“诚实”对于人格修养的意义，主要在于：",
+    correctText: "恪守诺言与规矩是赢得他人信赖的立身之本", // 18
+    distractors: [
+      "为了在竞赛中获得名次可以采取下假棋的手段", // 18
+      "谎言只要没有被当场拆穿就可以一直心安理得", // 18
+      "只有在被别人监督发现的情况下才需要讲诚信"  // 18
+    ],
+    explanation: "诚实是人际交往中最牢固的基石；讲真话、守信用、按规矩行事，方能获得长久的尊重。"
+  },
+  {
+    mode: "listening",
+    stem: "在国际书展中拾获装有他人现金与贵重护照的钱包时，诚实高尚的做法是：",
+    correctText: "原封不动送交服务台或报警以物归原主", // 16
+    distractors: [
+      "私自将现金占为己有并将证件扔进垃圾箱", // 16
+      "等到失主提供高额现金报酬后才肯拿出皮", // 16
+      "偷偷拿给身边的朋友分赃并要求大家保密"  // 16
+    ],
+    explanation: "拾金不昧、物归原主是古今中外普遍赞颂的传统美德，也是诚信品质的具体折射。"
+  },
+
+  // --- 价值 11：勤勉 (21-22) ---
+  {
+    mode: "reading",
+    stem: "课文中“亚洲糖王”郭鹤年历经艰辛建立商业王国，其名言告诫年轻人成功的根本秘诀是：",
+    correctText: "脚踏实地艰苦奋斗并持之以恒逆水行舟", // 16
+    distractors: [
+      "坐享家族长辈积累的财富而无需付出汗水", // 16
+      "投机取巧寻找各种捷径以期一夜之间暴富", // 16
+      "只要运气足够好即使不努力也能达成伟业"  // 16
+    ],
+    explanation: "“逆水行舟，不进则退”；唯有九分勤勉配合一分智慧，长年累月踏实耕耘，方能铸就辉煌。"
+  },
+  {
+    mode: "listening",
+    stem: "跳水世界冠军潘德蕾拉、羽球名将李宗伟为国争光的背后，其最具启发意义的精神是：",
+    correctText: "克服伤病伤痛并坚持每天数千次的枯燥刻苦训练", // 20
+    distractors: [
+      "单凭得天独厚先天身体天赋便轻而易举登上最高台", // 20
+      "平时训练敷衍了事而只在正式决赛前夕通宵熬夜热", // 20
+      "遇到强大的外籍强劲对手时便立即寻找各种伤病借"  // 20
+    ],
+    explanation: "金牌的背后凝聚着无数个日夜汗流浃背的坚持，展现了勤勉进取为国争光的坚定毅力。"
+  },
+
+  // --- 价值 12：合作 (23-24) ---
+  {
+    mode: "reading",
+    stem: "全国推行“智能手机志愿巡逻”（VSP）反罪案运动中，公众积极响应与警方联手，体现的合作精神是：",
+    correctText: "警民携手互为耳目共同编织治安防护网", // 16
+    distractors: [
+      "公民完全代替执法人员在街道实施搜捕", // 16
+      "市民只顾防范自家而对社区罪案不闻问", // 16
+      "将邻里纠纷故意夸大并向警方报假案情"  // 16
+    ],
+    explanation: "警力有限而民力无穷；社区民众与执法机关同心同德、默契配合，才能确保社会祥和安宁。"
+  },
+  {
+    mode: "listening",
+    stem: "在应对骨痛热症（COMBI）大扫除行动中，若想彻底消灭黑斑蚊滋生温床，最核心的合作要求是：",
+    correctText: "全体社区居民分工合作全面清理积水死角", // 17
+    distractors: [
+      "每个人都只清理自己家门前而将垃圾扫隔壁", // 17
+      "互相推诿指责并将所有清理任务留给年长者", // 17
+      "只在卫生官员巡视检查的那一天才做表面功"  // 17
+    ],
+    explanation: "灭蚊防疫属于集体公共卫生行动，必须各家各户全域协同配合，决不留卫生死角。"
+  },
+
+  // --- 价值 13：中庸 (25-26) ---
+  {
+    mode: "reading",
+    stem: "在日常使用水、电与公共能源设施时，“中庸”价值指导我们应当树立怎样的理性消费观？",
+    correctText: "适度节用不铺张浪费且保障资源永续共享", // 17
+    distractors: [
+      "只要付得起水电费账单就可以整夜开冷气灯", // 17
+      "即便在危急救火时刻也舍不得用一滴自来水", // 17
+      "公共洗手间的水电不花自家钱因此无需关紧"  // 17
+    ],
+    explanation: "中庸之道重在“适度有节、不走极端”；珍惜能源既非过度抠门，更非肆意挥霍，乃是取用有度。"
+  },
+  {
+    mode: "listening",
+    stem: "在观看全国儿童球赛或辩论比赛时，践行“中庸态度”文明观赛的观众应当做到：",
+    correctText: "理性支持己方选手并不用偏激言语辱骂对手", // 18
+    distractors: [
+      "在看台上疯狂叫嚣吹哨以干扰客队球员发球", // 18
+      "只要己方队伍比分落后就愤怒向赛场投掷物", // 18
+      "遇到裁判争议判罚便立刻在网上人肉搜索官"  // 18
+    ],
+    explanation: "情绪不偏激、言行有分寸、热情而不失理智，正是中庸智慧在现代公共体育竞技中的极佳写照。"
+  },
+
+  // --- 价值 14：礼让 (27-28) ---
+  {
+    mode: "reading",
+    stem: "在课文《卫塞节花车游行》中，路上私家车主面对长达 12 公里的游行车队，耐心等待并不鸣笛催促，这生动诠释了：",
+    correctText: "顾全多元宗教盛典大局并以谦和胸襟实践礼让", // 19
+    distractors: [
+      "因为道路完全被堵死迫于无奈才不得不坐在车", // 19
+      "驾驶员随意强行变道插队并频繁按喇叭催促人", // 19
+      "司机们认为花车队伍阻碍了交通应当受严厉处"  // 19
+    ],
+    explanation: "心怀仁让、顾念全社会多元文化节庆的祥和，主动礼让花车先行，是马来西亚国民和谐的最高温度。"
+  },
+  {
+    mode: "listening",
+    stem: "在公共轻快铁站或医院走廊中，面对行动不便的残障长者或急需抢救的伤患，践行“礼让”的应有之举是：",
+    correctText: "主动退后一步让出通道并协助需要者优先通行", // 19
+    distractors: [
+      "假装戴耳机低头看手机并故意装作没看见眼前人", // 19
+      "抢先一步冲进电梯车厢并迅速按下关门键挡在外", // 19
+      "责怪他们行动过于缓慢而阻碍了自己上学的时间"  // 19
+    ],
+    explanation: "“临事让人一步，自有余地”。在公共空间谦逊让行、扶危济困，不仅不委屈，反而彰显了伟大的博爱人格。"
+  },
+
+  // --- 综合拓展：国家原则与多元和谐 (29-30) ---
+  {
+    mode: "reading",
+    stem: "综合全册所学，马来西亚国民在面对多元种族与不同习俗差异时，最具建设性的相处原则是：",
+    correctText: "各民族休戚与共并携手弘扬国家宪法道德价值", // 20
+    distractors: [
+      "只要经济富有便无需恪守任何社会公共道德规", // 20
+      "仅在外国游客面前才表现出热情礼貌的文明风", // 20
+      "遇到不同文化习俗时坚决拒绝接触并刻意孤立"  // 20
+    ],
+    explanation: "和谐源于尊重与担当。在国家宪法与原则指引下，各族携手守护共同家园，方能迎来繁荣昌盛。"
+  },
+  {
+    mode: "listening",
+    stem: "六年级学生作为未来的国家栋梁，在学校与社区中践行爱国守法最首要的日常行动是：",
+    correctText: "团结一致互谅互让以共创繁荣安宁之美好马来西亚", // 22
+    distractors: [
+      "遇到利益冲突时只考虑个人或个别族群自身利益得", // 22
+      "将自身宗教信仰强加于他人并强迫其改变原有的风", // 22
+      "漠视一切国家法律与社会公序良俗只追求一己之私"  // 22
+    ],
+    explanation: "从日常点滴做起，心怀友爱、包容礼让、勤勉诚信，便是支撑马来西亚走向辉煌最坚固的基石。"
+  }
+];
+
+/* ==================== 3. 动态洗牌算法与运行期题库构建 ==================== */
+function shuffleArray(arr) {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+let ACTIVE_QUESTIONS = [];
+
+function buildShuffledQuiz() {
+  ACTIVE_QUESTIONS = RAW_QUESTIONS.map(q => {
+    const unarranged = [
+      { text: q.correctText, isCorrect: true },
+      ...q.distractors.map(d => ({ text: d, isCorrect: false }))
+    ];
+    // 每次打开网页或重置，选项进行深度随机洗牌
+    const shuffledOptions = shuffleArray(unarranged);
+    return {
+      mode: q.mode,
+      stem: q.stem,
+      options: shuffledOptions,
+      explanation: q.explanation
+    };
+  });
+}
+
+/* ==================== 4. 全局状态与计时管理 ==================== */
+let startTimeMYT = null;
+let endTimeMYT = null;
+let currentIndex = 0;
+let initialScore = 0;
+let wrongHistory = [];
+let isReviewPhase = false;
+let reviewIndex = 0;
+let reviewPassedCount = 0;
+let hasAnsweredCurrent = false;
+
+let currentPdfBlob = null;
+let currentPdfFileName = "";
+
+function setLayout(type) {
+  document.body.className = (type === 'phone') ? 'layout-phone' : 'layout-desktop';
+  document.getElementById('layoutModal').style.display = 'none';
+  startTimeMYT = new Date();
+  buildShuffledQuiz();
+  loadQuestion();
+}
+
+/* ==================== 5. 语音引擎（Edge / Chrome 区分） ==================== */
+const isEdge = /Edg\//i.test(navigator.userAgent);
+let voiceCounter = 0;
+
+function speak(text, onEnd) {
+  voiceCounter = (voiceCounter + 1) % 4;
+
+  if (isEdge && 'speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN';
+    u.rate = 0.92;
+    const voices = window.speechSynthesis.getVoices().filter(v => v.lang.includes('zh'));
+    if (voices.length > 0) {
+      u.voice = voices[voiceCounter % voices.length];
+    }
+    if (onEnd) u.onend = onEnd;
+    window.speechSynthesis.speak(u);
+  } else {
+    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN&client=tw-ob`;
+    const audio = new Audio(url);
+    audio.onended = () => { if (onEnd) onEnd(); };
+    audio.onerror = () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const fallbackU = new SpeechSynthesisUtterance(text);
+        fallbackU.lang = 'zh-CN';
+        fallbackU.rate = 0.92;
+        if (onEnd) fallbackU.onend = onEnd;
+        window.speechSynthesis.speak(fallbackU);
+      }
+    };
+    audio.play().catch(() => {
+      if ('speechSynthesis' in window) {
+        const fallbackU = new SpeechSynthesisUtterance(text);
+        fallbackU.lang = 'zh-CN';
+        if (onEnd) fallbackU.onend = onEnd;
+        window.speechSynthesis.speak(fallbackU);
+      }
+    });
+  }
+}
+
+function replayStemAudio() {
+  const currentQ = isReviewPhase ? wrongHistory[reviewIndex] : ACTIVE_QUESTIONS[currentIndex];
+  speak(currentQ.stem);
+}
+
+function playListeningOption(event, optText) {
+  event.stopPropagation();
+  const soundwave = document.getElementById('beeSoundwave');
+  soundwave.classList.add('active');
+
+  speak(optText, () => {
+    soundwave.classList.remove('active');
+  });
+}
+
+/* ==================== 6. 题目渲染与交互 ==================== */
+function loadQuestion() {
+  hasAnsweredCurrent = false;
+  const currentQ = isReviewPhase ? wrongHistory[reviewIndex] : ACTIVE_QUESTIONS[currentIndex];
+
+  const progressRatio = isReviewPhase 
+    ? (reviewIndex / wrongHistory.length) * 100 
+    : ((currentIndex + 1) / ACTIVE_QUESTIONS.length) * 100;
+  document.getElementById('progressBar').style.width = `${progressRatio}%`;
+
+  if (!isReviewPhase) {
+    document.getElementById('questCounterText').innerText = `第 ${currentIndex + 1} / 30 题`;
+    document.getElementById('scoreText').innerText = `初始得分：${initialScore}`;
+  } else {
+    document.getElementById('questCounterText').innerText = `错题重温：第 ${reviewIndex + 1} / ${wrongHistory.length} 题`;
+    document.getElementById('scoreText').innerText = `重温攻克数：${reviewPassedCount}`;
+  }
+
+  const modeBadge = document.getElementById('modeBadge');
+  const beeBox = document.getElementById('nerdyBeeBox');
+  const stemElem = document.getElementById('questStemText');
+
+  stemElem.innerText = currentQ.stem;
+
+  if (currentQ.mode === 'listening') {
+    modeBadge.innerText = isReviewPhase ? "🎧 错题重温·听力题（选项完全隐匿）" : "🎧 听力理解题（选项完全隐匿）";
+    beeBox.style.display = 'flex';
+    speak(currentQ.stem);
+  } else {
+    modeBadge.innerText = isReviewPhase ? "📖 错题重温·阅读题" : "📖 阅读理解题";
+    beeBox.style.display = 'none';
+  }
+
+  const optionsBox = document.getElementById('optionsBox');
+  optionsBox.innerHTML = '';
+
+  currentQ.options.forEach((optObj, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-row';
+
+    if (currentQ.mode === 'reading') {
+      btn.innerHTML = `<div class="opt-text">${optObj.text}</div>`;
+    } else {
+      btn.innerHTML = `
+        <div class="opt-text" style="letter-spacing:1px; opacity:0.85;">【点击右侧收听此选项内容】</div>
+        <button class="listen-opt-btn" onclick="playListeningOption(event, '${optObj.text}')">🔊 试听语音</button>
+      `;
+    }
+
+    btn.onclick = () => handleSelectOption(idx, btn);
+    optionsBox.appendChild(btn);
+  });
+
+  document.getElementById('feedbackBox').style.display = 'none';
+}
+
+function handleSelectOption(selectedIndex, selectedBtn) {
+  if (hasAnsweredCurrent) return;
+  hasAnsweredCurrent = true;
+
+  const currentQ = isReviewPhase ? wrongHistory[reviewIndex] : ACTIVE_QUESTIONS[currentIndex];
+  const allRows = document.querySelectorAll('.option-row');
+  allRows.forEach(r => r.disabled = true);
+
+  const selectedOpt = currentQ.options[selectedIndex];
+  const feedbackBox = document.getElementById('feedbackBox');
+  const feedbackText = document.getElementById('feedbackText');
+
+  let correctBtn = null;
+  currentQ.options.forEach((opt, i) => {
+    if (opt.isCorrect) correctBtn = allRows[i];
+  });
+
+  if (selectedOpt.isCorrect) {
+    selectedBtn.classList.add('correct');
+    if (!isReviewPhase) {
+      initialScore++;
+    } else {
+      reviewPassedCount++;
+    }
+    feedbackText.innerHTML = `<strong>回答正确！收集到一颗晶莹灵魄！</strong><br>${currentQ.explanation}`;
+    speak("回答正确！");
+  } else {
+    selectedBtn.classList.add('wrong');
+    if (correctBtn) correctBtn.classList.add('correct');
+    if (!isReviewPhase) {
+      wrongHistory.push(currentQ);
+    }
+    
+    if (currentQ.mode === 'reading') {
+      feedbackText.innerHTML = `<strong>正确选项为：</strong>“${currentQ.options.find(o => o.isCorrect).text}”<br><br>${currentQ.explanation}`;
+    } else {
+      feedbackText.innerHTML = `<strong>回答有误。请再次点击试听绿色高亮选项的正确语音。</strong><br><br>${currentQ.explanation}`;
+    }
+    speak("回答有误，请静心体悟解析。");
+  }
+
+  feedbackBox.style.display = 'block';
+}
+
+function onProceedNext() {
+  if (!isReviewPhase) {
+    if (currentIndex < ACTIVE_QUESTIONS.length - 1) {
+      currentIndex++;
+      loadQuestion();
+    } else {
+      if (wrongHistory.length === 0) {
+        onAllCompleted();
+      } else {
+        startRemediationPhase();
+      }
+    }
+  } else {
+    if (reviewIndex < wrongHistory.length - 1) {
+      reviewIndex++;
+      loadQuestion();
+    } else {
+      const requiredPass = Math.ceil(wrongHistory.length / 2);
+      if (reviewPassedCount >= requiredPass) {
+        onAllCompleted();
+      } else {
+        alert(`错题重温中攻克了 ${reviewPassedCount}/${wrongHistory.length} 题，未达到半数要求（需攻克 ${requiredPass} 题）。选项已为您重新洗牌，请再次耐心温习！`);
+        wrongHistory = wrongHistory.map(q => ({
+          ...q,
+          options: shuffleArray(q.options)
+        }));
+        reviewIndex = 0;
+        reviewPassedCount = 0;
+        loadQuestion();
+      }
+    }
+  }
+}
+
+function startRemediationPhase() {
+  isReviewPhase = true;
+  wrongHistory = wrongHistory.map(q => ({
+    ...q,
+    options: shuffleArray(q.options)
+  }));
+  reviewIndex = 0;
+  reviewPassedCount = 0;
+  alert(`🏕️ 30 题初次求索完成！营火旁留下了 ${wrongHistory.length} 团未解困惑。现在进入【错题攻坚重温】阶段，攻克半数以上（≥${Math.ceil(wrongHistory.length/2)} 题）即可圆满通关！`);
+  loadQuestion();
+}
+
+function onAllCompleted() {
+  endTimeMYT = new Date();
+  document.getElementById('questCard').style.display = 'none';
+  document.querySelector('.progress-section').style.display = 'none';
+  document.getElementById('popMartCelebration').style.display = 'block';
+  renderPopMartGrid();
+}
+
+/* ==================== 快速测试授权密码校验通道 ==================== */
+function skipToCertForTesting() {
+  const enteredPass = prompt("【SJKC NAN HWA 督导专用】\n请输入快速直达安全授权密码：");
+  if (enteredPass === "idme5374@ONG") {
+    if (!startTimeMYT) startTimeMYT = new Date(Date.now() - 16 * 60 * 1000);
+    initialScore = 30;
+    onAllCompleted();
+  } else if (enteredPass !== null) {
+    alert("❌ 授权密码错误！无权直接跳过测评环节。");
+  }
+}
+
+/* ==================== 7. 泡泡玛特 (Pop-Mart) 27 位同学盲盒卡片渲染 ==================== */
+function renderPopMartGrid() {
+  const grid = document.getElementById('popMartGrid');
+  grid.innerHTML = '';
+  const popGradients = [
+    'linear-gradient(135deg, #ff7043, #d84315)',
+    'linear-gradient(135deg, #66bb6a, #2e7d32)',
+    'linear-gradient(135deg, #ffa726, #ef6c00)',
+    'linear-gradient(135deg, #ab47bc, #6a1b9a)',
+    'linear-gradient(135deg, #26c6da, #00838f)',
+    'linear-gradient(135deg, #ec407a, #ad1457)',
+    'linear-gradient(135deg, #9ccc65, #558b2f)',
+    'linear-gradient(135deg, #ffee58, #f57f17)',
+    'linear-gradient(135deg, #8d6e63, #4e342e)'
+  ];
+
+  CLASS_ROSTER.forEach((student, index) => {
+    const card = document.createElement('div');
+    card.className = 'popmart-card';
+    card.style.background = popGradients[index % popGradients.length];
+
+    const formattedId = student.id < 10 ? `0${student.id}` : student.id;
+
+    card.innerHTML = `
+      <div class="popmart-no-badge">#${formattedId}</div>
+      <div class="popmart-name-zh">${student.zh}</div>
+      <div class="popmart-name-en">${student.en}</div>
+    `;
+
+    card.onclick = () => generateNanHwaCertificatePDF(student);
+    grid.appendChild(card);
+  });
+}
+
+/* ==================== 8. 时区纠错与全原生零依赖 PDF 编译器 ==================== */
+function formatMalaysiaDateTime(dateObj) {
+  const safeDate = (dateObj instanceof Date && !isNaN(dateObj)) ? dateObj : new Date();
+  try {
+    return new Intl.DateTimeFormat('zh-Hans-CN', {
+      timeZone: 'Asia/Kuala_Lumpur',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(safeDate);
+  } catch (err) {
+    const utcTime = safeDate.getTime() + (safeDate.getTimezoneOffset() * 60000);
+    const mytDate = new Date(utcTime + (3600000 * 8));
+    const pad = n => String(n).padStart(2, '0');
+    return `${mytDate.getFullYear()}-${pad(mytDate.getMonth() + 1)}-${pad(mytDate.getDate())} ${pad(mytDate.getHours())}:${pad(mytDate.getMinutes())}:${pad(mytDate.getSeconds())}`;
+  }
+}
+
+function calculateDurationText(start, end) {
+  const s = (start instanceof Date && !isNaN(start)) ? start : new Date(Date.now() - 15 * 60 * 1000);
+  const e = (end instanceof Date && !isNaN(end)) ? end : new Date();
+  const diffSec = Math.max(1, Math.floor((e - s) / 1000));
+  const mins = Math.floor(diffSec / 60);
+  const secs = diffSec % 60;
+  return `${mins} 分 ${secs} 秒`;
+}
+
+// 原生零依赖 Canvas 转标准 A4 PDF 核心算法
+function canvasToDirectPdfBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) { reject(new Error("Canvas 导出失败")); return; }
+      blob.arrayBuffer().then((buffer) => {
+        const imgBytes = new Uint8Array(buffer);
+        const widthPt = 595.28;
+        const heightPt = 841.89;
+        
+        let pdfChunks = [];
+        let offsets = [];
+        let currentOffset = 0;
+
+        function appendStr(str) {
+          const enc = new TextEncoder();
+          const bytes = enc.encode(str);
+          pdfChunks.push(bytes);
+          currentOffset += bytes.length;
+        }
+
+        function appendBytes(bytes) {
+          pdfChunks.push(bytes);
+          currentOffset += bytes.length;
+        }
+
+        appendStr("%PDF-1.4\n%\xFF\xFF\xFF\xFF\n");
+
+        // Catalog
+        offsets.push(currentOffset);
+        appendStr("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+
+        // Pages
+        offsets.push(currentOffset);
+        appendStr("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+
+        // Page
+        offsets.push(currentOffset);
+        appendStr("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + widthPt + " " + heightPt + "] /Resources << /XObject << /Im1 4 0 R >> >> /Contents 5 0 R >>\nendobj\n");
+
+        // Image XObject (JPEG)
+        offsets.push(currentOffset);
+        appendStr("4 0 obj\n<< /Type /XObject /Subtype /Image /Width " + canvas.width + " /Height " + canvas.height + " /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + imgBytes.length + " >>\nstream\n");
+        appendBytes(imgBytes);
+        appendStr("\nendstream\nendobj\n");
+
+        // Content stream
+        offsets.push(currentOffset);
+        const drawCommand = "q " + widthPt + " 0 0 " + heightPt + " 0 0 cm /Im1 Do Q\n";
+        const drawBytes = new TextEncoder().encode(drawCommand);
+        appendStr("5 0 obj\n<< /Length " + drawBytes.length + " >>\nstream\n" + drawCommand + "endstream\nendobj\n");
+
+        // Xref Table
+        const startXref = currentOffset;
+        appendStr("xref\n0 6\n0000000000 65535 f \n");
+        for (let i = 0; i < offsets.length; i++) {
+          appendStr(String(offsets[i]).padStart(10, '0') + " 00000 n \n");
+        }
+
+        appendStr("trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + startXref + "\n%%EOF\n");
+
+        const pdfBlob = new Blob(pdfChunks, { type: "application/pdf" });
+        resolve(pdfBlob);
+      }).catch(reject);
+    }, 'image/jpeg', 0.94);
+  });
+}
+
+function generateNanHwaCertificatePDF(studentObj) {
+  try {
+    if (!startTimeMYT) startTimeMYT = new Date(Date.now() - 15 * 60 * 1000);
+    if (!endTimeMYT) endTimeMYT = new Date();
+
+    const canvas = document.getElementById('pdfRenderCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 绘制 Cozy Grove 暖枫古纸证书背景
+    ctx.fillStyle = '#fdfaf2';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 经典墨绿与琥珀双层边框
+    ctx.strokeStyle = '#2e7d32';
+    ctx.lineWidth = 14;
+    ctx.strokeRect(36, 36, canvas.width - 72, canvas.height - 72);
+
+    ctx.strokeStyle = '#f57f17';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(56, 56, canvas.width - 112, canvas.height - 112);
+
+    // 1. 学校全称
+    ctx.fillStyle = '#1b5e20';
+    ctx.font = 'bold 54px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('SJKC NAN HWA', canvas.width / 2, 160);
+    ctx.font = 'bold 36px sans-serif';
+    ctx.fillText('南华国民型华文小学', canvas.width / 2, 220);
+
+    // 2. 证书标题
+    ctx.fillStyle = '#bf360c';
+    ctx.font = 'bold 44px sans-serif';
+    ctx.fillText('六年级道德教育·居家自主研学修习凭证', canvas.width / 2, 330);
+
+    ctx.strokeStyle = '#bf360c';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(200, 370);
+    ctx.lineTo(canvas.width - 200, 370);
+    ctx.stroke();
+
+    // 3. 正文表格内容
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#263238';
+
+    const startY = 460;
+    const lineGap = 92;
+
+    const fullEndStr = formatMalaysiaDateTime(endTimeMYT);
+    const mytDateStr = fullEndStr.split(' ')[0].replace(/\//g, '-');
+    const startMYTStr = formatMalaysiaDateTime(startTimeMYT);
+    const endMYTStr = formatMalaysiaDateTime(endTimeMYT);
+    const durationStr = calculateDurationText(startTimeMYT, endTimeMYT);
+    const formattedId = studentObj.id < 10 ? `0${studentObj.id}` : studentObj.id;
+
+    const items = [
+      { label: '学校名称 (School Name)：', val: 'SJKC NAN HWA (南华华小)' },
+      { label: '学生姓名 (Student Name)：', val: `${studentObj.en}（${studentObj.zh}）` },
+      { label: '学生学号 (Student No.)：', val: `第 ${formattedId} 号` },
+      { label: '研学科目 (Subject)：', val: '道德教育 (Moral Education)' },
+      { label: '完成日期 (Malaysia Date)：', val: `${mytDateStr} (MYT)` },
+      { label: '研学用时 (Completion Time)：', val: `${startMYTStr} 至 ${endMYTStr}（耗时：${durationStr}）` },
+      { label: '综合评价 (Final Score)：', val: `初始 30 题达成 ${initialScore}/30 | 错题攻坚重温达标 (100% 掌握)` }
+    ];
+
+    items.forEach((item, idx) => {
+      const y = startY + (idx * lineGap);
+      ctx.font = 'bold 28px sans-serif';
+      ctx.fillStyle = '#1b5e20';
+      ctx.fillText(item.label, 130, y);
+      ctx.font = '30px sans-serif';
+      ctx.fillStyle = '#263238';
+      ctx.fillText(item.val, 130, y + 44);
+    });
+
+    // 官方认证印章
+    ctx.strokeStyle = '#c62828';
+    ctx.lineWidth = 6;
+    ctx.strokeRect(canvas.width - 380, canvas.height - 380, 240, 110);
+    ctx.fillStyle = '#c62828';
+    ctx.font = 'bold 28px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('SJKC NAN HWA', canvas.width - 260, canvas.height - 330);
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText('教务处认证讫', canvas.width - 260, canvas.height - 295);
+
+    // 底部防伪说明
+    ctx.fillStyle = '#78909c';
+    ctx.font = '22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('本凭证由系统依据马来西亚标准时间 (UTC+8) 实时生成，真实记录六年级道德价值求索成效。', canvas.width / 2, canvas.height - 120);
+
+    const safeName = studentObj.en.replace(/[\/\\?%*:|"<>]/g, '_');
+    currentPdfFileName = `SJKC_NAN_HWA_道德教育研学证明_${formattedId}_${safeName}_${studentObj.zh}.pdf`;
+
+    // 展示即时预览弹窗
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.94);
+    document.getElementById('certPreviewImage').src = dataUrl;
+    document.getElementById('certModal').style.display = 'flex';
+
+    // 生成并触发直接下载
+    canvasToDirectPdfBlob(canvas).then(pdfBlob => {
+      currentPdfBlob = pdfBlob;
+      triggerDirectPdfDownload();
+    }).catch(err => {
+      console.warn("直接 PDF 流创建警告:", err);
+    });
+
+  } catch (err) {
+    alert("生成证书时检测到异常：" + err.message);
+  }
+}
+
+function triggerDirectPdfDownload() {
+  if (currentPdfBlob) {
+    const url = URL.createObjectURL(currentPdfBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = currentPdfFileName;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 1200);
+  } else {
+    downloadCertImage();
+  }
+}
+
+function downloadCertImage() {
+  const canvas = document.getElementById('pdfRenderCanvas');
+  const imgUrl = canvas.toDataURL('image/jpeg', 0.95);
+  const a = document.createElement('a');
+  a.href = imgUrl;
+  a.download = currentPdfFileName.replace('.pdf', '.jpg');
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => document.body.removeChild(a), 1200);
+}
+
+function printCertificate() {
+  const canvas = document.getElementById('pdfRenderCanvas');
+  const imgData = canvas.toDataURL('image/jpeg', 0.95);
+  const win = window.open('', '_blank');
+  win.document.write(`
+    <html>
+      <head><title>${currentPdfFileName}</title></head>
+      <body style="margin:0; display:flex; justify-content:center; align-items:center;">
+        <img src="${imgData}" style="max-width:100%; height:auto;" onload="window.print(); window.close();"/>
+      </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+function closeCertModal() {
+  document.getElementById('certModal').style.display = 'none';
+}
+
+/* ==================== 9. 全天候严密防截屏/切屏黑屏遮罩 ==================== */
+function triggerBlackout() {
+  document.getElementById('blackoutGuard').style.display = 'flex';
+}
+function dismissBlackout() {
+  document.getElementById('blackoutGuard').style.display = 'none';
+}
+
+window.addEventListener('blur', triggerBlackout);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) triggerBlackout();
+});
+document.addEventListener('mouseleave', triggerBlackout);
+
+window.addEventListener('keydown', (e) => {
+  if (
+    e.key === 'PrintScreen' || 
+    e.keyCode === 44 || 
+    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'S')) ||
+    (e.metaKey && e.shiftKey && (e.key === '3' || e.key === '4' || e.key === '5')) ||
+    (e.ctrlKey && e.key === 'p')
+  ) {
+    e.preventDefault();
+    triggerBlackout();
+  }
+});
+window.addEventListener('keyup', (e) => {
+  if (e.key === 'PrintScreen' || e.keyCode === 44) {
+    triggerBlackout();
+  }
+});
+
+/* ==================== 10. 视力友好辅助工具 ==================== */
+let baseFontSize = 26;
+function adjustSize(delta) {
+  baseFontSize = Math.min(38, Math.max(20, baseFontSize + delta));
+  document.documentElement.style.setProperty('--font-base-size', baseFontSize + 'px');
+}
+
+const themeStyles = ['', 'theme-high-contrast', 'theme-moss'];
+let currentThemeIndex = 0;
+function toggleContrast() {
+  document.body.classList.remove('theme-high-contrast', 'theme-moss');
+  currentThemeIndex = (currentThemeIndex + 1) % themeStyles.length;
+  if (themeStyles[currentThemeIndex]) {
+    document.body.classList.add(themeStyles[currentThemeIndex]);
+  }
+}
+</script>
+</body>
+</html>
