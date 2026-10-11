@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>LINE | 南华国民型华文小学（SJKC Nan Hwa）六年级华文伴学</title>
+<style>
+  :root {
+    --line-green: #06C755;
+    --line-green-dark: #05a847;
+    --line-chat-bg: #8C9DAC;
+    --bubble-user: #85E249;
+    --bubble-friend: #FFFFFF;
+    --text-main: #1E232A;
+    --text-muted: #7E8E9F;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 移动端全屏视口 */
+  html, body {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    background: var(--line-chat-bg);
+    overflow: hidden;
+    position: fixed;
+  }
+
+  #mobile-app-root {
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--line-chat-bg);
+  }
+
+  /* 顶部状态与安全区占位 */
+  .safe-top {
+    padding-top: env(safe-area-inset-top, 0px);
+    background: #FFFFFF;
+  }
+
+  /* 顶端微型进度条 */
+  #subtle-progress-track {
+    width: 100%;
+    height: 3.5px;
+    background: rgba(0,0,0,0.08);
+    position: relative;
+    z-index: 30;
+  }
+  #subtle-progress-bar {
+    width: 2.5%;
+    height: 100%;
+    background: var(--line-green);
+    transition: width 0.35s ease;
+  }
+
+  /* 移动版 LINE 原生导航顶栏 */
+  .mobile-header {
+    height: 52px;
+    background: #FFFFFF;
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    z-index: 25;
+    flex-shrink: 0;
+  }
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .back-icon {
+    font-size: 24px;
+    color: #1E232A;
+    font-weight: 300;
+  }
+  .avatar-header {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #FFF0F5;
+    border: 2px solid var(--line-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+  .header-meta {
+    display: flex;
+    flex-direction: column;
+  }
+  .header-name {
+    font-size: 14.5px;
+    font-weight: bold;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .header-subtag {
+    font-size: 10px;
+    color: var(--line-green);
+    font-weight: 500;
+  }
+
+  .nav-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #2D3748;
+    font-size: 18px;
+  }
+  .icon-touch {
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* 聊天主视窗 */
+  .chat-viewport {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scroll-behavior: smooth;
+  }
+  .chat-viewport::-webkit-scrollbar { display: none; }
+
+  .time-badge {
+    align-self: center;
+    background: rgba(0, 0, 0, 0.22);
+    color: #FFF;
+    font-size: 10.5px;
+    padding: 3px 12px;
+    border-radius: 12px;
+    margin: 4px 0;
+    backdrop-filter: blur(4px);
+  }
+
+  .msg-row {
+    display: flex;
+    gap: 8px;
+    max-width: 88%;
+    animation: fadeIn 0.18s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg-row.friend { align-self: flex-start; }
+  .msg-row.user { align-self: flex-end; flex-direction: row-reverse; }
+
+  .avatar-chat {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+
+  .msg-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sender-name {
+    font-size: 10.5px;
+    color: #4A5568;
+  }
+  .bubble-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .msg-row.user .bubble-wrap { flex-direction: row-reverse; }
+
+  .chat-bubble {
+    padding: 9px 13px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.45;
+    word-break: break-word;
+    user-select: text;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .msg-row.friend .chat-bubble {
+    background: var(--bubble-friend);
+    color: var(--text-main);
+    border-top-left-radius: 4px;
+  }
+  .msg-row.user .chat-bubble {
+    background: var(--bubble-user);
+    color: #11240A;
+    border-top-right-radius: 4px;
+  }
+  .bubble-time {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: nowrap;
+  }
+
+  /* 输入中动画 */
+  .typing-box {
+    display: flex;
+    gap: 4px;
+    padding: 8px 12px;
+    background: #FFF;
+    border-radius: 16px;
+    border-top-left-radius: 4px;
+    width: fit-content;
+  }
+  .typing-dot {
+    width: 5px;
+    height: 5px;
+    background: #9AA5B1;
+    border-radius: 50%;
+    animation: bounce 1.1s infinite ease-in-out;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.18s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.36s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+    40% { transform: scale(1.2); opacity: 1; background: var(--line-green); }
+  }
+
+  /* 移动端考题卡片 */
+  .quiz-card {
+    background: #FFF;
+    border-radius: 14px;
+    padding: 13px;
+    width: 275px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  }
+  .quiz-tag {
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .tag-pinyin { background: #EBF8FF; color: #2B6CB0; }
+  .tag-vocab { background: #FAF5FF; color: #6B46C1; }
+  .tag-comp { background: #F0FFF4; color: #276749; }
+  .tag-revision { background: #FFF5F5; color: #C53030; }
+
+  .quiz-desc {
+    font-size: 13px;
+    color: #2D3748;
+    margin-bottom: 10px;
+    line-height: 1.45;
+    font-weight: 500;
+  }
+
+  .choice-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .choice-item {
+    background: #F7FAFC;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 9px;
+    padding: 9px 12px;
+    font-size: 13px;
+    color: #2D3748;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 42px;
+  }
+  .choice-item:active {
+    background: #E8F9EE;
+    border-color: var(--line-green);
+  }
+
+  .pinyin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .pinyin-btn {
+    background: #F7FAFC;
+    border: 1.5px solid #CBD5E0;
+    border-radius: 9px;
+    padding: 10px 4px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #2B6CB0;
+    text-align: center;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .pinyin-btn:active {
+    background: #EBF8FF;
+    border-color: var(--line-green);
+  }
+
+  .next-card-btn {
+    align-self: center;
+    background: #FFFFFF;
+    border: 2px solid var(--line-green);
+    color: var(--line-green);
+    font-weight: bold;
+    font-size: 13px;
+    padding: 9px 18px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(6,199,85,0.2);
+    cursor: pointer;
+  }
+  .next-card-btn:active {
+    background: var(--line-green);
+    color: #FFF;
+  }
+
+  /* 移动版 LINE 原生底部输入栏 */
+  .mobile-input-bar {
+    background: #FFFFFF;
+    border-top: 1px solid var(--border-subtle);
+    padding: 6px 10px calc(8px + env(safe-area-inset-bottom, 0px)) 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .guide-tip {
+    font-size: 10px;
+    color: #A0AEC0;
+    text-align: center;
+    font-weight: 500;
+  }
+  .input-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .dock-tool-icon {
+    font-size: 20px;
+    color: #718096;
+    padding: 4px;
+  }
+  .input-field {
+    flex: 1;
+    height: 38px;
+    background: #F1F4F8;
+    border: 1px solid #E2E8F0;
+    border-radius: 19px;
+    padding: 0 14px;
+    font-size: 13.5px;
+    outline: none;
+  }
+  .input-field:focus {
+    background: #FFFFFF;
+    border-color: var(--line-green);
+  }
+  .send-circle-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--line-green);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  /* 侧边滑出式移动抽屉 (Mobile Drawer) */
+  .mobile-drawer-mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 50;
+    display: none;
+  }
+  .mobile-drawer-mask.show { display: block; }
+  .mobile-drawer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 82%;
+    max-width: 320px;
+    background: #FFFFFF;
+    z-index: 51;
+    transform: translateX(100%);
+    transition: transform 0.25s ease-out;
+    display: flex;
+    flex-direction: column;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .mobile-drawer.show { transform: translateX(0); }
+
+  .drawer-head {
+    padding: 16px;
+    border-bottom: 1px solid #E2E8F0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .drawer-title { font-size: 15px; font-weight: bold; color: var(--text-main); }
+  .drawer-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .drawer-card {
+    padding: 12px;
+    border-radius: 10px;
+    background: #F7FAFC;
+    border: 1px solid #EDF2F7;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+  }
+  .drawer-card.active { background: #E8F9EE; border-color: var(--line-green); }
+  .drawer-card.locked { opacity: 0.5; cursor: not-allowed; }
+
+  /* 移动端全屏弹窗 */
+  .mobile-modal {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(3px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+  .mobile-modal.show { display: flex; }
+
+  /* 结业证书卡片 (移动端紧凑微缩版) */
+  .cert-container {
+    background: #FFFDF9;
+    border: 5px double #C5A059;
+    border-radius: 12px;
+    padding: 16px 12px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    max-height: 92vh;
+    overflow-y: auto;
+  }
+  .cert-school-cn { font-size: 15px; font-weight: bold; color: #8C1D40; }
+  .cert-school-en { font-size: 9.5px; font-weight: 600; color: #4A5568; margin-bottom: 4px; }
+  .cert-badge { font-size: 32px; margin: 2px 0; }
+  .cert-title {
+    font-size: 15px;
+    font-weight: bold;
+    color: #1A202C;
+    border-bottom: 1.5px solid #C5A059;
+    padding-bottom: 2px;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .cert-p {
+    font-size: 11px;
+    color: #4A5568;
+    line-height: 1.5;
+    text-align: justify;
+    margin-bottom: 8px;
+  }
+  .cert-hl { font-weight: bold; color: #C53030; }
+  .cert-grid {
+    background: #F7FAFC;
+    border: 1px dashed #CBD5E0;
+    border-radius: 6px;
+    padding: 8px;
+    font-size: 10.5px;
+    text-align: left;
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+  .cert-footer-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 9px;
+    color: #718096;
+  }
+  .cert-line { border-top: 1px solid #718096; width: 75px; padding-top: 2px; text-align: center; }
+
+  /* 学生列表两列布局 */
+  .student-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    max-height: 380px;
+    overflow-y: auto;
+    margin: 10px 0;
+  }
+  .student-pill {
+    background: #EDF2F7;
+    border: 1px solid #CBD5E0;
+    border-radius: 6px;
+    padding: 7px 4px;
+    font-size: 11px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .student-pill:active {
+    background: #E8F9EE;
+    border-color: var(--line-green);
+    color: var(--line-green);
+  }
+</style>
+</head>
+<body>
+
+<div id="mobile-app-root">
+  <!-- 顶部刘海安全区 -->
+  <div class="safe-top"></div>
+
+  <!-- 微型研习进度条 -->
+  <div id="subtle-progress-track">
+    <div id="subtle-progress-bar"></div>
+  </div>
+
+  <!-- 移动端 LINE 顶栏 -->
+  <header class="mobile-header">
+    <div class="nav-left" onclick="toggleDrawer()">
+      <span class="back-icon">‹</span>
+      <div class="avatar-header">🌰</div>
+      <div class="header-meta">
+        <div class="header-name">
+          <span>小栗 (伴读萌友)</span>
+        </div>
+        <div class="header-subtag" id="mobile-student-label">正在研习...</div>
+      </div>
+    </div>
+    <div class="nav-right-actions">
+      <span class="icon-touch" onclick="triggerCertCheck()" title="结业证书">🎓</span>
+      <span class="icon-touch" onclick="fakeCall()" title="语音通话">📞</span>
+      <span class="icon-touch" onclick="toggleDrawer()" title="目录">☰</span>
+    </div>
+  </header>
+
+  <!-- 消息对话流 -->
+  <main class="chat-viewport" id="chat-stream">
+    <div class="time-badge">今天 马来西亚居家华文核心自修（40题全册精研）</div>
+  </main>
+
+  <!-- 移动端底部原生输入栏 -->
+  <footer class="mobile-input-bar">
+    <div class="guide-tip">
+      💡 凡四字填空题，答案必须为课文成语哦！
+    </div>
+    <div class="input-controls">
+      <span class="dock-tool-icon" onclick="toggleSound()" id="sound-icon-btn">🔔</span>
+      <input type="text" class="input-field" id="user-mobile-input" 
+             placeholder="打字回复四字成语..." 
+             maxlength="10" 
+             onkeydown="handleMobileKey(event)">
+      <button class="send-circle-btn" onclick="submitMobileAnswer()">➤</button>
+    </div>
+  </footer>
+
+  <!-- 侧边滑出式关卡抽屉 -->
+  <div class="mobile-drawer-mask" id="drawer-mask" onclick="toggleDrawer()"></div>
+  <aside class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-head">
+      <span class="drawer-title">📖 六年级华文关卡 (共40题)</span>
+      <span onclick="toggleDrawer()" style="font-size:20px; padding:4px;">✕</span>
+    </div>
+    <div class="drawer-list" id="drawer-list-container"></div>
+    <div style="padding:14px; border-top:1px solid #EDF2F7; text-align:center;">
+      <button class="choice-item" style="width:100%; justify-content:center; color:#C53030; font-weight:bold;" onclick="openLoginModal()">🔄 切换学生姓名/座号</button>
+    </div>
+  </aside>
+
+  <!-- 学生座号登入弹窗 -->
+  <div class="mobile-modal show" id="login-modal">
+    <div class="cert-container" style="max-width:340px;">
+      <div class="cert-school-cn">南华国民型华文小学</div>
+      <div class="cert-school-en">SEKOLAH JENIS KEBANGSAAN (CINA) NAN HWA</div>
+      <div style="font-size:13px; font-weight:bold; color:#2D3748; margin: 6px 0 2px;">六年级华文居家自学研习系统（移动版）</div>
+      <p style="font-size:11px; color:#718096;">请选择你的<b>座号与姓名</b>登入：</p>
+      <div class="student-grid" id="student-grid"></div>
+    </div>
+  </div>
+
+  <!-- 结业证书弹窗 -->
+  <div class="mobile-modal" id="cert-modal">
+    <div class="cert-container" id="cert-box">
+      <div class="cert-school-cn">南华国民型华文小学</div>
+      <div class="cert-school-en">SEKOLAH JENIS KEBANGSAAN (CINA) NAN HWA</div>
+      <div class="cert-badge">🏅</div>
+      <div class="cert-title">居 家 自 学 结 业 证 书</div>
+      
+      <p class="cert-p" id="cert-main-desc">
+        兹证明六年级学生 <span class="cert-hl" id="cert-st-name">--</span>（座号：<span id="cert-st-id">--</span>），已圆满完成<b>《六年级华文全册核心素养与课文深度自学研习课程》</b>，特颁此证以资证明。
+      </p>
+
+      <div class="cert-grid">
+        <div>📚 研习课程：KSSR Semakan 六年级华文精研（40题通关）</div>
+        <div>📅 结业日期：<span id="cert-date-text">2026年10月12日</span></div>
+        <div>⏱️ 起止时间：<span id="cert-time-span">--</span></div>
+        <div>📊 考核成绩：<span id="cert-score-text" style="font-weight:bold; color:#C53030;">--</span></div>
+      </div>
+
+      <div class="cert-footer-row">
+        <div class="cert-line">教务主任 启</div>
+        <div style="font-size:18px; color:#C53030;">💮<br><span style="font-size:8px;">南华华小教务处</span></div>
+        <div class="cert-line">华文科主任 签</div>
+      </div>
+
+      <div style="margin-top: 14px; display:flex; gap:8px; justify-content:center;">
+        <button class="choice-item" style="padding:6px 12px; background:var(--line-green); color:#FFF; font-weight:bold;" onclick="downloadCertPDF()">📥 下载结业证书 (PDF)</button>
+        <button class="choice-item" style="padding:6px 10px;" onclick="closeCertModal()">关闭</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   1. SJKC Nan Hwa 27 位学生花名册
+   ========================================================================== */
+const ROSTER = [
+  { id: 1, en: "ASHRAFF MUHAMMAD DANIEL BIN MOHD NOH", cn: "丹尼尔" },
+  { id: 2, en: "CINDY TOH AN TIAN", cn: "杜安恬" },
+  { id: 3, en: "EDEN LAU", cn: "刘奕堂" },
+  { id: 4, en: "FOO SI SHENG", cn: "符泗盛" },
+  { id: 5, en: "GAN JIE FOHNG", cn: "颜杰丰" },
+  { id: 6, en: "GAN ONG SIN", cn: "颜煌星" },
+  { id: 7, en: "GAN TZI YANG", cn: "颜子杨" },
+  { id: 8, en: "GAN YU XIN", cn: "颜妤欣" },
+  { id: 9, en: "GOH JIA LING", cn: "吴佳琳" },
+  { id: 10, en: "JANICE NGOH WAN ROU", cn: "吴婉柔" },
+  { id: 11, en: "JAYDEN WONG JUN YU", cn: "王军宇" },
+  { id: 12, en: "JENNY ANG", cn: "洪婕宁" },
+  { id: 13, en: "KEVIN TOW WEI CHEN", cn: "杜伟诚" },
+  { id: 14, en: "LAU WEI JIE", cn: "刘伟杰" },
+  { id: 15, en: "LAU ZHI XUAN", cn: "刘智瑄" },
+  { id: 16, en: "LIM ZHI YAANG", cn: "林志旸" },
+  { id: 17, en: "LOH YA XUAN", cn: "罗雅轩" },
+  { id: 18, en: "MUHAMMAD ARIF WAFIY BIN AZMI", cn: "华菲" },
+  { id: 19, en: "NG TIN WEI", cn: "黄庭玮" },
+  { id: 20, en: "NG ZI NING", cn: "黄芷宁" },
+  { id: 21, en: "NIVEDHANRAJ A/L P.SIVARAJ", cn: "尼文" },
+  { id: 22, en: "TAN JAY DEN", cn: "陈济恩" },
+  { id: 23, en: "TAN WEI CHENG", cn: "陈伟承" },
+  { id: 24, en: "TEH ZHI JIN", cn: "郑智谨" },
+  { id: 25, resuscitation: "THOR LI JUN", en: "THOR LI JUN", cn: "杜俐君" },
+  { id: 26, en: "TOH WU SIANG", cn: "杜武祥" },
+  { id: 27, en: "WANG HONG YONG", cn: "王宏勇" }
+];
+
+let currentStudent = null;
+let startTime = null;
+let endTime = null;
+
+// 首答精准追踪 (40 题)
+let firstAttemptTotal = 0;
+let firstAttemptCorrect = 0;
+
+/* ==========================================================================
+   2. 移动端音效引擎 (Web Audio API 纯原生生成)
+   ========================================================================== */
+class AudioEngine {
+  constructor() { this.ctx = null; this.muted = false; }
+  init() {
+    if (!this.ctx) {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      this.ctx = new AudioCtx();
+    }
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+  }
+  chime() {
+    if (this.muted) return;
+    this.init();
+    const t = this.ctx.currentTime;
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    osc1.frequency.setValueAtTime(1318.5, t);
+    gain1.gain.setValueAtTime(0.18, t);
+    gain1.gain.exponentialRampToValueAtTime(0.0001, t + 0.55);
+    osc1.connect(gain1);
+    gain1.connect(this.ctx.destination);
+    osc1.start(t);
+    osc1.stop(t + 0.6);
+
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    osc2.frequency.setValueAtTime(1661.2, t + 0.08);
+    gain2.gain.setValueAtTime(0.2, t + 0.08);
+    gain2.gain.exponentialRampToValueAtTime(0.0001, t + 0.75);
+    osc2.connect(gain2);
+    gain2.connect(this.ctx.destination);
+    osc2.start(t + 0.08);
+    osc2.stop(t + 0.8);
+  }
+  click() {
+    if (this.muted) return;
+    this.init();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1100, t);
+    gain.gain.setValueAtTime(0.025, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.03);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.035);
+  }
+  success() {
+    if (this.muted) return;
+    this.init();
+    const t = this.ctx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.frequency.setValueAtTime(f, t + i * 0.08);
+      gain.gain.setValueAtTime(0.1, t + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + i * 0.08 + 0.28);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t + i * 0.08);
+      osc.stop(t + i * 0.08 + 0.32);
+    });
+  }
+  oops() {
+    if (this.muted) return;
+    this.init();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(260, t);
+    gain.gain.setValueAtTime(0.06, t);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.25);
+  }
+}
+const sound = new AudioEngine();
+
+function toggleSound() {
+  sound.muted = !sound.muted;
+  document.getElementById('sound-icon-btn').innerText = sound.muted ? '🔕' : '🔔';
+}
+
+function shuffle(arr) {
+  const r = [...arr];
+  for (let i = r.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+
+/* ==========================================================================
+   3. 课本 40 道考题完整库（8 个关卡，每关 5 题，按序解锁）
+   ========================================================================== */
+const COURSE = [
+  {
+    id: 1,
+    title: "关卡一：迁徙与水战",
+    desc: "角马大迁徙与草船借箭",
+    unlocked: true,
+    completed: false,
+    questions: [
+      {
+        id: "Q1",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“它们除了要跨越（湍）急的河流……”请选出括号中字的正确汉语拼音：",
+        rawOptions: ["tuān", "duān", "chuǎn", "chuǎi"],
+        answer: "tuān"
+      },
+      {
+        id: "Q2",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "河岸边鳄鱼正等待时机发动攻击。请写出课文中用来形容敌人暗中准备骚动侵犯的四字成语：",
+        answer: "蠢蠢欲动",
+        hint: "提示：像虫子一样蠕动准备作乱——【蠢____】"
+      },
+      {
+        id: "Q3",
+        type: "mcq_5w1h",
+        tag: "课文理解 (When)",
+        prompt: "根据课文，角马、斑马等动物通常在什么时节为了水源展开大迁徙？",
+        rawOptions: ["旱季来临时", "雨季鼎盛时", "严冬降临时", "春分播种时"],
+        answer: "旱季来临时"
+      },
+      {
+        id: "Q4",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“曹操听到了擂鼓声和（　）喊声，下令弓弩手不要轻举妄动。”",
+        rawOptions: ["呐", "纳", "衲", "讷"],
+        answer: "呐"
+      },
+      {
+        id: "Q5",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“诸葛亮立下军令状……若造不好，甘受惩（罚）。”请选出括号中字的正确读音：",
+        rawOptions: ["fá", "fǎ", "fà", "fā"],
+        answer: "fá"
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "关卡二：妙算与科技",
+    desc: "神机妙算、滤水书与钱袋案",
+    unlocked: false,
+    completed: false,
+    questions: [
+      {
+        id: "Q6",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "周瑜得知诸葛亮满载十万支箭归来后长叹佩服。请写出形容诸葛亮谋略推算极其神妙的四字成语：",
+        answer: "神机妙算",
+        hint: "提示：推算极为精准——【神____】"
+      },
+      {
+        id: "Q7",
+        type: "mcq_5w1h",
+        tag: "课文理解 (What)",
+        prompt: "特丽莎博士发明的《可以喝的书》，纸张中嵌入了什么微粒来消灭水中细菌？",
+        rawOptions: ["纳米银微粒", "活性炭纤维", "高纯食用盐", "极细生石灰"],
+        answer: "纳米银微粒"
+      },
+      {
+        id: "Q8",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "司机为自己辩护时态度强硬、自认很有道理。请打出形容说话做事理由正当充分而底气十足的四字成语：",
+        answer: "理直气壮",
+        hint: "提示：理由充分故底气十足——【理____】"
+      },
+      {
+        id: "Q9",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“它就是黑水（虻）。”请选出括号中字的正确汉语拼音：",
+        rawOptions: ["méng", "máng", "máo", "wén"],
+        answer: "méng"
+      },
+      {
+        id: "Q10",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“面对大水，大家分工合作，在（　）要关头抢运货物。”",
+        rawOptions: ["紧", "紫", "系", "絮"],
+        answer: "紧"
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "关卡三：温情与叮咛",
+    desc: "守望相助、老铺温情与诫子书",
+    unlocked: false,
+    completed: false,
+    questions: [
+      {
+        id: "Q11",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "洪水来临时街坊不分种族合力搬货。请写出形容邻里同舟共济、互相帮助关照的四字成语：",
+        answer: "守望相助",
+        hint: "提示：邻里间互相关照——【守____】"
+      },
+      {
+        id: "Q12",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“家豪最近常常与手机为伍，做功课总是敷（　）了事。”",
+        rawOptions: ["衍", "街", "衡", "衔"],
+        answer: "衍"
+      },
+      {
+        id: "Q13",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "母亲在信中告诫凡事要早作打算。请写出比喻平时不作准备、临急才想办法的四字成语：",
+        answer: "临渴掘井",
+        hint: "提示：口渴了才去挖井——【临____】"
+      },
+      {
+        id: "Q14",
+        type: "mcq_5w1h",
+        tag: "课文理解 (Who)",
+        prompt: "陈大婶在杂货店里能用什么语言同常客熟络地交流？",
+        rawOptions: ["流利的淡米尔语", "纯熟的客家方言", "简单的马来英语", "亲切的广东白话"],
+        answer: "流利的淡米尔语"
+      },
+      {
+        id: "Q15",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“脾气也变得暴（躁）。”请选出括号中字的正确汉语拼音：",
+        rawOptions: ["zào", "cāo", "zhào", "zǎo"],
+        answer: "zào"
+      }
+    ]
+  },
+  {
+    id: 4,
+    title: "关卡四：丝带与奔波",
+    desc: "蓝丝带仪式、网课相声与送餐员",
+    unlocked: false,
+    completed: false,
+    questions: [
+      {
+        id: "Q16",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“即将（卸）下教职的萨宾娜老师……”括号中字的正确汉语拼音是：",
+        rawOptions: ["xiè", "yù", "yùn", "jiè"],
+        answer: "xiè"
+      },
+      {
+        id: "Q17",
+        type: "mcq_5w1h",
+        tag: "课文理解 (Why)",
+        prompt: "萨宾娜老师为什么把第一根代表赞扬与爱的蓝丝带送给常被孤立的小保罗？",
+        rawOptions: ["曾见小保罗救起受伤小松鼠", "小保罗主动帮老师整理抽屉", "小保罗期末考试取得第一名", "小保罗的父母委托老师关照"],
+        answer: "曾见小保罗救起受伤小松鼠"
+      },
+      {
+        id: "Q18",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "姐姐夸奖弟弟认错改正态度积极。请打出古语中赞赏年轻人可以教育成才的四字成语：",
+        answer: "孺子可教",
+        hint: "提示：年轻人有出息、可受教——【孺____】"
+      },
+      {
+        id: "Q19",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“赤（裸）着上身听课的那一张照片。”括号中字的正确汉语拼音是：",
+        rawOptions: ["luǒ", "guǒ", "kē", "kè"],
+        answer: "luǒ"
+      },
+      {
+        id: "Q20",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "送餐员不论烈日风雨都尽职尽责。请打出形容做事小心谨慎、辛勤努力的四字成语：",
+        answer: "兢兢业业",
+        hint: "提示：做事勤恳谨慎——【兢____】"
+      }
+    ]
+  },
+  {
+    id: 5,
+    title: "关卡五：狂欢与全息",
+    desc: "淘气的鞋、龙卡利马戏团与凤凰山",
+    unlocked: false,
+    completed: false,
+    questions: [
+      {
+        id: "Q21",
+        type: "pinyin_only",
+        tag: "多音字辨析",
+        prompt: "课文句子：“这些鞋终于成为自己的主人，纵情狂欢了一（宿）。”括号中字的正确读音是：",
+        rawOptions: ["xiǔ", "sù", "xiù", "suò"],
+        answer: "xiǔ"
+      },
+      {
+        id: "Q22",
+        type: "mcq_5w1h",
+        tag: "课文理解 (Why)",
+        prompt: "早晨全镇的人为什么都只能‘一拐一拐’地上班上学？",
+        rawOptions: ["左右脚鞋子全都穿错", "路面被狂风暴雨淹没", "昨晚大家都参加长跑", "街上到处都是碎石块"],
+        answer: "左右脚鞋子全都穿错"
+      },
+      {
+        id: "Q23",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“鱼儿身上的鳞片分明，纹路清晰，惟妙惟（　），不像设计出来的。”",
+        rawOptions: ["肖", "消", "削", "宵"],
+        answer: "肖"
+      },
+      {
+        id: "Q24",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“只见潭水翻（　），如洪水般涌向家丁，贪官狼狈而逃。”",
+        rawOptions: ["腾", "藤", "滕", "胜"],
+        answer: "腾"
+      },
+      {
+        id: "Q25",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“一些表演还配合器（械）演出……”括号中字的正确汉语拼音是：",
+        rawOptions: ["xiè", "jiè", "róng", "chè"],
+        answer: "xiè"
+      }
+    ]
+  },
+  {
+    id: 6,
+    title: "关卡六：灰尘与绣龙",
+    desc: "细菌大搬家与巧儿绣龙解大旱",
+    unlocked: false,
+    completed: false,
+    questions: [
+      {
+        id: "Q26",
+        type: "input_proverb",
+        tag: "谚语掌握",
+        prompt: "阿钟正气凛然地警告作恶的贪官终将自取灭亡。请补全这句名言的前四个字（____必自毙）：",
+        answer: "多行不义",
+        hint: "提示：坏事做多了必然自毙——【多____】"
+      },
+      {
+        id: "Q27",
+        type: "pinyin_only",
+        tag: "纯拼音辨析",
+        prompt: "课文句子：“以降解树叶里的（纤）维素为生。”括号中字的正确汉语拼音是：",
+        rawOptions: ["xiān", "qiān", "xiàn", "jiān"],
+        answer: "xiān"
+      },
+      {
+        id: "Q28",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "细菌听了妈妈的分析后疑虑全消。请打出形容思路立刻畅通、思想顿时省悟的四字成语：",
+        answer: "茅塞顿开",
+        hint: "提示：心里的闭塞立刻被打开——【茅____】"
+      },
+      {
+        id: "Q29",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“有一年海岛大（　），葱绿的大地变得荒芜，花草凋谢。”",
+        rawOptions: ["旱", "早", "草", "卓"],
+        answer: "旱"
+      },
+      {
+        id: "Q30",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "课文描写大旱灾害过后到处是枯槁残破的惨淡景象。请写出这句四字成语：",
+        answer: "疮痍满目",
+        hint: "提示：眼睛所见尽是创伤灾害——【疮____】"
+      }
+    ]
+  },
+  {
+    id: 7,
+    title: "关卡七：雨林与扯铃",
+    desc: "砂拉越尼亚洞、民俗扯铃与红树炭",
+    unlocked: false,
+    completed: false,
+    questions: [
+      {
+        id: "Q31",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“采燕工人搭建棚架使用的是一种质地极其坚（　）的木材。”",
+        rawOptions: ["固", "困", "因", "圆"],
+        answer: "固"
+      },
+      {
+        id: "Q32",
+        type: "mcq_5w1h",
+        tag: "课文理解 (What)",
+        prompt: "采燕工人用来搭建支架与高空木梯的极其坚硬木材，伊班人称为什么？",
+        rawOptions: ["盐木", "柚木", "檀木", "桦木"],
+        answer: "盐木"
+      },
+      {
+        id: "Q33",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“塔莎通过刻苦练习，终于成功能够（　）握高难度的扯铃招式。”",
+        rawOptions: ["掌", "常", "堂", "党"],
+        answer: "掌"
+      },
+      {
+        id: "Q34",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "塔莎深信刻苦用功可以弥补资质上的欠缺。请写出这句四字成语：",
+        answer: "勤能补拙",
+        hint: "提示：勤奋可以弥补笨拙——【勤____】"
+      },
+      {
+        id: "Q35",
+        type: "pinyin_only",
+        tag: "多音字辨析",
+        prompt: "课文句子：“把袋子（勒）紧绑好。”在表示用绳索捆紧时，括号中字的正确读音是：",
+        rawOptions: ["lēi", "lè", "lǐ", "lā"],
+        answer: "lēi"
+      }
+    ]
+  },
+  {
+    id: 8,
+    title: "关卡八：姓氏与知知港",
+    desc: "传统炭窑、多元姓氏与知知港重生",
+    unlocked: false,
+    completed: false,
+    questions: [
+      {
+        id: "Q36",
+        type: "mcq_5w1h",
+        tag: "课文理解 (What)",
+        prompt: "在熏制红树木炭的过程中，直接决定木炭成败品质的最关键因素是？",
+        rawOptions: ["炭窑的火候与温度", "红树林砍伐的月份", "码头工人的运炭量", "封窑黄泥的厚薄度"],
+        answer: "炭窑的火候与温度"
+      },
+      {
+        id: "Q37",
+        type: "cloze_char",
+        tag: "形似字辨析",
+        prompt: "选字填空：“（　）谱是记载某个姓氏家族子孙世系传承的书籍。”",
+        rawOptions: ["族", "旅", "旋", "旗"],
+        answer: "族"
+      },
+      {
+        id: "Q38",
+        type: "mcq_5w1h",
+        tag: "课文理解 (What)",
+        prompt: "马来西亚马来同胞姓名中的“bin”代表什么含义？",
+        rawOptions: ["某人之儿子", "某人之女儿", "家族之封邑", "地方之官阶"],
+        answer: "某人之儿子"
+      },
+      {
+        id: "Q39",
+        type: "mcq_5w1h",
+        tag: "课文理解 (What)",
+        prompt: "森美兰知知港地名中的国文“Titi”，原本在国语中是什么意思？",
+        rawOptions: ["桥梁", "高山", "港口", "矿湖"],
+        answer: "桥梁"
+      },
+      {
+        id: "Q40",
+        type: "input_proverb",
+        tag: "成语掌握",
+        prompt: "如今的小镇百姓生活安定、愉快从事劳作。请写出形容生活安定、劳作愉快的四字成语：",
+        answer: "安居乐业",
+        hint: "提示：安定生活、快乐劳作——【安____】"
+      }
+    ]
+  }
+];
+
+/* ==========================================================================
+   4. 移动端对话控制引擎
+   ========================================================================== */
+let currentChapterIdx = 0;
+let currentQuestionIdx = 0;
+let revisionQueue = [];
+let isRevisionMode = false;
+
+window.onload = () => {
+  initStudentGrid();
+};
+
+function initStudentGrid() {
+  const g = document.getElementById('student-grid');
+  g.innerHTML = '';
+  ROSTER.forEach((st) => {
+    const p = document.createElement('div');
+    p.className = 'student-pill';
+    p.innerText = `${st.id.toString().padStart(2, '0')}. ${st.cn} (${st.en.split(' ')[0]})`;
+    p.onclick = () => selectStudent(st);
+    g.appendChild(p);
+  });
+}
+
+function selectStudent(st) {
+  currentStudent = st;
+  startTime = new Date();
+  document.getElementById('login-modal').classList.remove('show');
+  document.getElementById('mobile-student-label').innerText = `座号 ${st.id} · ${st.cn}`;
+
+  updateProgressBar();
+  renderDrawerChapters();
+  startChapter(0);
+}
+
+function openLoginModal() {
+  toggleDrawer();
+  document.getElementById('login-modal').classList.add('show');
+}
+
+function startChapter(idx) {
+  currentChapterIdx = idx;
+  currentQuestionIdx = 0;
+  revisionQueue = [];
+  isRevisionMode = false;
+
+  const stream = document.getElementById('chat-stream');
+  stream.innerHTML = `
+    <div class="time-badge">${COURSE[idx].title} · 开始研习</div>
+  `;
+
+  sendFriendMsg(`哈喽，${currentStudent.cn}！我们进入【${COURSE[idx].title}】啦！请看题目👇`, () => {
+    dispatchQuestion();
+  });
+}
+
+function dispatchQuestion() {
+  const ch = COURSE[currentChapterIdx];
+
+  if (!isRevisionMode && currentQuestionIdx < ch.questions.length) {
+    const q = ch.questions[currentQuestionIdx];
+    renderQuestionCard(q, false);
+    return;
+  }
+
+  if (!isRevisionMode && revisionQueue.length > 0) {
+    isRevisionMode = true;
+    sendFriendMsg(`本关新题已完成！现在进入【错题温习重考】环节，把刚才未掌握的题目重新攻克吧！💪`, () => {
+      dispatchRevision();
+    });
+    return;
+  }
+
+  if (isRevisionMode && revisionQueue.length > 0) {
+    dispatchRevision();
+    return;
+  }
+
+  completeChapter();
+}
+
+function dispatchRevision() {
+  const q = revisionQueue[0];
+  renderQuestionCard(q, true);
+}
+
+function renderQuestionCard(q, isRev) {
+  const stream = document.getElementById('chat-stream');
+  const row = document.createElement('div');
+  row.className = 'msg-row friend';
+
+  let innerHTML = '';
+  const tagClass = q.type.startsWith('pinyin') ? 'tag-pinyin' : (q.type.startsWith('cloze') ? 'tag-vocab' : 'tag-comp');
+
+  if (q.type === 'pinyin_only') {
+    const shuffled = shuffle(q.rawOptions);
+    let pinyinBtns = '';
+    shuffled.forEach((p) => {
+      pinyinBtns += `<div class="pinyin-btn" onclick="handlePinyinChoice('${q.id}', '${p}', ${isRev})">${p}</div>`;
+    });
+    innerHTML = `
+      <div class="quiz-card" id="qcard-${q.id}">
+        <div class="quiz-tag ${isRev ? 'tag-revision' : tagClass}">${isRev ? '🔄 错题重考' : q.tag}</div>
+        <div class="quiz-desc">${q.prompt}</div>
+        <div class="pinyin-grid">${pinyinBtns}</div>
+      </div>
+    `;
+  } else if (q.type === 'cloze_char' || q.type === 'mcq_5w1h') {
+    const shuffled = shuffle(q.rawOptions);
+    let optList = '';
+    shuffled.forEach((opt, idx) => {
+      optList += `
+        <div class="choice-item" onclick="handleOptionChoice('${q.id}', '${opt}', ${isRev})">
+          <span style="font-weight:bold; color:var(--line-green);">${['A','B','C','D'][idx]}.</span>
+          <span>${opt}</span>
+        </div>
+      `;
+    });
+    innerHTML = `
+      <div class="quiz-card" id="qcard-${q.id}">
+        <div class="quiz-tag ${isRev ? 'tag-revision' : tagClass}">${isRev ? '🔄 错题重考' : q.tag}</div>
+        <div class="quiz-desc">${q.prompt}</div>
+        <div class="choice-list">${optList}</div>
+      </div>
+    `;
+  } else if (q.type === 'input_proverb') {
+    innerHTML = `
+      <div class="quiz-card" id="qcard-${q.id}">
+        <div class="quiz-tag ${isRev ? 'tag-revision' : 'tag-vocab'}">${isRev ? '🔄 错题重考' : q.tag}</div>
+        <div class="quiz-desc">${q.prompt}</div>
+        <div style="font-size:10.5px; color:#A0AEC0; font-style:italic;">请在底部输入框打字回复四字成语 ✍️</div>
+      </div>
+    `;
+    document.getElementById('user-mobile-input').placeholder = "打字回复课文四字成语...";
+    document.getElementById('user-mobile-input').focus();
+  }
+
+  row.innerHTML = `<div style="width:36px;"></div>${innerHTML}`;
+  stream.appendChild(row);
+  scrollStream();
+}
+
+function handlePinyinChoice(qId, val, isRev) {
+  disableCard(qId);
+  appendUserMsg(val);
+  checkAnswer(val, isRev);
+}
+
+function handleOptionChoice(qId, val, isRev) {
+  disableCard(qId);
+  appendUserMsg(val);
+  checkAnswer(val, isRev);
+}
+
+function checkAnswer(userVal, isRev) {
+  const ch = COURSE[currentChapterIdx];
+  const q = isRev ? revisionQueue[0] : ch.questions[currentQuestionIdx];
+
+  // 严格统计第 1 次作答
+  if (!isRev) {
+    firstAttemptTotal++;
+  }
+
+  const isCorrect = (q.type === 'input_proverb')
+    ? (userVal.trim() === q.answer || userVal.includes(q.answer))
+    : (userVal === q.answer);
+
+  if (isCorrect) {
+    sound.success();
+    if (!isRev) firstAttemptCorrect++;
+
+    if (isRev) {
+      revisionQueue.shift();
+      sendFriendMsg("太棒啦！这次彻底掌握啦，错题已顺利过关！🎉", () => {
+        dispatchQuestion();
+      });
+    } else {
+      currentQuestionIdx++;
+      sendFriendMsg("答对啦，真棒！✨", () => {
+        dispatchQuestion();
+      });
+    }
+  } else {
+    sound.oops();
+    if (!isRev) {
+      revisionQueue.push(q);
+      currentQuestionIdx++;
+      sendFriendMsg("哎呀，这题不小心答错了哦～没关系！小栗已经把它记进【错题本】啦，稍后陪你重温复习！💪", () => {
+        dispatchQuestion();
+      });
+    } else {
+      sendFriendMsg(`再仔细思考一下哦～（${q.hint || '可以回想一下课文内容再试一次！'}）`, () => {
+        dispatchQuestion();
+      });
+    }
+  }
+}
+
+function submitMobileAnswer() {
+  const input = document.getElementById('user-mobile-input');
+  const val = input.value.trim();
+  if (!val) return;
+
+  const ch = COURSE[currentChapterIdx];
+  const q = isRevisionMode ? revisionQueue[0] : ch.questions[currentQuestionIdx];
+
+  sound.click();
+  appendUserMsg(val);
+  input.value = '';
+
+  if (q && q.type === 'input_proverb') {
+    disableCard(q.id);
+    checkAnswer(val, isRevisionMode);
+  } else {
+    setTimeout(() => {
+      sendFriendMsg("收到啦！我们继续跟着课文题目一起前进吧～", () => {});
+    }, 400);
+  }
+}
+
+function handleMobileKey(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    submitMobileAnswer();
+  }
+}
+
+function disableCard(qId) {
+  const c = document.getElementById(`qcard-${qId}`);
+  if (c) c.style.pointerEvents = 'none';
+}
+
+function completeChapter() {
+  const ch = COURSE[currentChapterIdx];
+  ch.completed = true;
+
+  if (currentChapterIdx + 1 < COURSE.length) {
+    COURSE[currentChapterIdx + 1].unlocked = true;
+  }
+
+  updateProgressBar();
+  renderDrawerChapters();
+
+  const isAllDone = COURSE.every(c => c.completed);
+
+  if (isAllDone) {
+    endTime = new Date();
+    sendFriendMsg(`恭喜你，${currentStudent.cn}！全册40道考题已全部通关！🎉 你的专属南华华小结业证书已经生成！`, () => {
+      renderCertPromptCard();
+    });
+  } else {
+    const nextCh = COURSE[currentChapterIdx + 1];
+    sendFriendMsg(`太棒了！【${ch.title}】圆满通过！请点击下方卡片前往下一关卡吧👇`, () => {
+      renderNextPromptCard(nextCh);
+    });
+  }
+}
+
+function renderNextPromptCard(nextCh) {
+  const stream = document.getElementById('chat-stream');
+  const btn = document.createElement('button');
+  btn.className = 'next-card-btn';
+  btn.innerText = `👉 前往下一关：${nextCh.title}`;
+  btn.onclick = () => {
+    btn.remove();
+    startChapter(currentChapterIdx + 1);
+  };
+  stream.appendChild(btn);
+  scrollStream();
+}
+
+function renderCertPromptCard() {
+  const stream = document.getElementById('chat-stream');
+  const btn = document.createElement('button');
+  btn.className = 'next-card-btn';
+  btn.style.background = '#8C1D40';
+  btn.style.borderColor = '#C5A059';
+  btn.style.color = '#FFF';
+  btn.innerText = `🎓 点击查看并下载《南华华小结业证书》`;
+  btn.onclick = () => triggerCertCheck();
+  stream.appendChild(btn);
+  scrollStream();
+}
+
+function updateProgressBar() {
+  const done = COURSE.filter(c => c.completed).length;
+  const pct = Math.max(2.5, Math.round((done / COURSE.length) * 100));
+  document.getElementById('subtle-progress-bar').style.width = `${pct}%`;
+}
+
+function renderDrawerChapters() {
+  const cList = document.getElementById('drawer-list-container');
+  cList.innerHTML = '';
+  COURSE.forEach((ch, idx) => {
+    const item = document.createElement('div');
+    item.className = `drawer-card ${idx === currentChapterIdx ? 'active' : ''} ${!ch.unlocked ? 'locked' : ''}`;
+    
+    let icon = '🔒';
+    if (ch.completed) icon = '✅';
+    else if (ch.unlocked) icon = '📖';
+
+    item.innerHTML = `
+      <div>
+        <div style="font-size:13px; font-weight:bold; color:#2D3748;">${ch.title}</div>
+        <div style="font-size:11px; color:#718096;">${ch.desc}</div>
+      </div>
+      <div style="font-size:16px;">${icon}</div>
+    `;
+
+    item.onclick = () => {
+      if (!ch.unlocked) {
+        alert("🔒 必须先按顺序学完前面的关卡，才能解锁新关卡哦！");
+        return;
+      }
+      toggleDrawer();
+      startChapter(idx);
+    };
+    cList.appendChild(item);
+  });
+}
+
+function toggleDrawer() {
+  const mask = document.getElementById('drawer-mask');
+  const drawer = document.getElementById('mobile-drawer');
+  mask.classList.toggle('show');
+  drawer.classList.toggle('show');
+}
+
+/* ==========================================================================
+   5. 拟人打字、信息流与时间工具
+   ========================================================================== */
+function sendFriendMsg(text, callback) {
+  setTyping(true);
+  const delay = Math.min(Math.max(text.length * 40, 800), 1600);
+  const tClick = setInterval(() => sound.click(), 180);
+
+  setTimeout(() => {
+    clearInterval(tClick);
+    setTyping(false);
+
+    appendFriendMsg(text);
+    sound.chime();
+
+    setTimeout(callback, 500);
+  }, delay);
+}
+
+function setTyping(show) {
+  const stream = document.getElementById('chat-stream');
+  let t = document.getElementById('typing-indicator-box');
+  if (show && !t) {
+    t = document.createElement('div');
+    t.id = 'typing-indicator-box';
+    t.className = 'msg-row friend';
+    t.innerHTML = `
+      <div class="avatar-chat" style="background:#FFF0F5; display:flex; align-items:center; justify-content:center; font-size:18px;">🌰</div>
+      <div class="msg-body">
+        <div class="typing-box">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    `;
+    stream.appendChild(t);
+    scrollStream();
+  } else if (!show && t) {
+    t.remove();
+  }
+}
+
+function appendFriendMsg(text) {
+  const stream = document.getElementById('chat-stream');
+  const row = document.createElement('div');
+  row.className = 'msg-row friend';
+  row.innerHTML = `
+    <div class="avatar-chat" style="background:#FFF0F5; display:flex; align-items:center; justify-content:center; font-size:18px;">🌰</div>
+    <div class="msg-body">
+      <div class="sender-name">小栗 🌰</div>
+      <div class="bubble-wrap">
+        <div class="chat-bubble">${escapeHtml(text)}</div>
+        <div class="bubble-time">${getHMS(new Date(), false)}</div>
+      </div>
+    </div>
+  `;
+  stream.appendChild(row);
+  scrollStream();
+}
+
+function appendUserMsg(text) {
+  const stream = document.getElementById('chat-stream');
+  const row = document.createElement('div');
+  row.className = 'msg-row user';
+  row.innerHTML = `
+    <div class="avatar-chat" style="background:#FFEAA7; display:flex; align-items:center; justify-content:center; font-size:18px;">🎓</div>
+    <div class="msg-body">
+      <div class="bubble-wrap">
+        <div class="chat-bubble">${escapeHtml(text)}</div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end;">
+          <span style="font-size:9px; color:#E2E8F0;">已读</span>
+          <span class="bubble-time">${getHMS(new Date(), false)}</span>
+        </div>
+      </div>
+    </div>
+  `;
+  stream.appendChild(row);
+  scrollStream();
+}
+
+function scrollStream() {
+  const s = document.getElementById('chat-stream');
+  s.scrollTop = s.scrollHeight;
+}
+
+function getHMS(d = new Date(), showSeconds = true) {
+  const h = d.getHours().toString().padStart(2, '0');
+  const m = d.getMinutes().toString().padStart(2, '0');
+  if (!showSeconds) return `${h}:${m}`;
+  const s = d.getSeconds().toString().padStart(2, '0');
+  return `${h}:${m}:${s}`;
+}
+
+function escapeHtml(t) {
+  return t.replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+}
+
+function fakeCall() {
+  alert("📞 叮铃铃……\n小栗：“嘘～！我现在正在学校课室里自习呢，不方便接听语音通话哦！我们继续在 LINE 里答题温习嘛～”");
+}
+
+/* ==========================================================================
+   6. 证书核验、真实耗时核算与 PDF 自动下载
+   ========================================================================== */
+function triggerCertCheck() {
+  const completedCount = COURSE.filter(c => c.completed).length;
+  if (completedCount < COURSE.length) {
+    const pct = Math.round((completedCount / COURSE.length) * 100);
+    alert(`🎓 目前研习关卡完成进度为 ${pct}%（已通关 ${completedCount}/8 关）。\n请把全部 40 道考题及错题复习全部通关后，才能正式领取证书哦！`);
+    return;
+  }
+  openCertModal();
+}
+
+function openCertModal() {
+  if (!endTime) endTime = new Date();
+
+  document.getElementById('cert-st-name').innerText = `${currentStudent.cn} (${currentStudent.en})`;
+  document.getElementById('cert-st-id').innerText = currentStudent.id.toString().padStart(2, '0');
+
+  const now = new Date();
+  document.getElementById('cert-date-text').innerText = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+
+  const diffMs = Math.max(0, endTime - startTime);
+  const diffM = Math.floor(diffMs / 60000);
+  const diffS = Math.floor((diffMs % 60000) / 1000);
+  document.getElementById('cert-time-span').innerText = `${getHMS(startTime)} - ${getHMS(endTime)} (累计研习 ${diffM} 分 ${diffS} 秒)`;
+
+  const finalScorePct = Math.round((firstAttemptCorrect / 40) * 100);
+  const scoreEl = document.getElementById('cert-score-text');
+  const descEl = document.getElementById('cert-main-desc');
+
+  if (finalScorePct >= 85) {
+    scoreEl.innerText = `${finalScorePct}% (优异 / Excellent)`;
+    descEl.innerHTML = `兹证明六年级学生 <span class="cert-hl">${currentStudent.cn} (${currentStudent.en})</span>（座号：${currentStudent.id.toString().padStart(2, '0')}），已圆满完成<b>《六年级华文全册核心素养与课文深度自学研习课程》</b>，考核成绩优异，特颁此证以资证明。`;
+  } else {
+    scoreEl.innerText = `${finalScorePct}%`;
+    descEl.innerHTML = `兹证明六年级学生 <span class="cert-hl">${currentStudent.cn} (${currentStudent.en})</span>（座号：${currentStudent.id.toString().padStart(2, '0')}），已圆满完成<b>《六年级华文全册核心素养与课文深度自学研习课程》</b>，特颁此证以资证明。`;
+  }
+
+  document.getElementById('cert-modal').classList.add('show');
+}
+
+function closeCertModal() {
+  document.getElementById('cert-modal').classList.remove('show');
+}
+
+// 纯 JS 生成并下载标准 PDF 1.4 格式流
+function downloadCertPDF() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1200;
+  canvas.height = 850;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#FFFDF9';
+  ctx.fillRect(0, 0, 1200, 850);
+
+  ctx.strokeStyle = '#C5A059';
+  ctx.lineWidth = 14;
+  ctx.strokeRect(30, 30, 1140, 790);
+  ctx.lineWidth = 4;
+  ctx.strokeRect(46, 46, 1108, 758);
+
+  ctx.fillStyle = '#8C1D40';
+  ctx.font = 'bold 36px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('南 华 国 民 型 华 文 小 学', 600, 110);
+
+  ctx.fillStyle = '#4A5568';
+  ctx.font = 'bold 18px sans-serif';
+  ctx.fillText('SEKOLAH JENIS KEBANGSAAN (CINA) NAN HWA', 600, 142);
+
+  ctx.font = '54px sans-serif';
+  ctx.fillText('🏅', 600, 210);
+
+  ctx.fillStyle = '#1A202C';
+  ctx.font = 'bold 32px sans-serif';
+  ctx.fillText('居 家 自 学 结 业 证 书', 600, 260);
+
+  ctx.strokeStyle = '#C5A059';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(420, 275);
+  ctx.lineTo(780, 275);
+  ctx.stroke();
+
+  const finalScorePct = Math.round((firstAttemptCorrect / 40) * 100);
+  const excellentText = finalScorePct >= 85 ? '考核成绩优异，' : '';
+
+  ctx.fillStyle = '#2D3748';
+  ctx.font = '22px sans-serif';
+  ctx.fillText(`兹证明六年级学生 ${currentStudent.cn}（${currentStudent.en}），座号：${currentStudent.id.toString().padStart(2, '0')}`, 600, 340);
+  ctx.fillText(`已圆满完成《六年级华文全册核心素养与课文深度自学研习课程》，${excellentText}特颁此证以资证明。`, 600, 380);
+
+  ctx.fillStyle = '#F7FAFC';
+  ctx.fillRect(250, 420, 700, 170);
+  ctx.strokeStyle = '#CBD5E0';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(250, 420, 700, 170);
+
+  ctx.fillStyle = '#4A5568';
+  ctx.font = '19px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(`📚 研习课程：KSSR Semakan 六年级华文精研（共40道考题全部通关）`, 280, 460);
+  
+  const now = new Date();
+  ctx.fillText(`📅 结业日期：${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 (马来西亚现行时间)`, 280, 495);
+  
+  const diffMs = Math.max(0, endTime - startTime);
+  const diffM = Math.floor(diffMs / 60000);
+  const diffS = Math.floor((diffMs % 60000) / 1000);
+  ctx.fillText(`⏱️ 起止时间：${getHMS(startTime)} - ${getHMS(endTime)} (总研习时长：${diffM} 分 ${diffS} 秒)`, 280, 530);
+
+  const scoreLabel = finalScorePct >= 85 ? `${finalScorePct}% (优异 / Excellent)` : `${finalScorePct}%`;
+  ctx.fillText(`📊 考核成绩：${scoreLabel}`, 280, 565);
+
+  ctx.textAlign = 'center';
+  ctx.font = '18px sans-serif';
+  ctx.fillStyle = '#718096';
+  ctx.fillText('教务主任 启', 360, 680);
+  ctx.fillText('华文科主任 签', 840, 680);
+
+  ctx.strokeStyle = '#718096';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(280, 655); ctx.lineTo(440, 655);
+  ctx.moveTo(760, 655); ctx.lineTo(920, 655);
+  ctx.stroke();
+
+  ctx.fillStyle = '#C53030';
+  ctx.font = '40px sans-serif';
+  ctx.fillText('💮', 600, 670);
+  ctx.font = '14px sans-serif';
+  ctx.fillText('南华华小教务处', 600, 695);
+
+  canvas.toBlob((blob) => {
+    const reader = new FileReader();
+    reader.onload = function() {
+      const imgDataUrl = reader.result;
+      const pdfBlob = createMinimalPdfFromImage(imgDataUrl, 1200, 850);
+      
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(pdfBlob);
+      link.download = `SJKC_Nan_Hwa_六年级华文自学结业证书_${currentStudent.cn}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+    reader.readAsDataURL(blob);
+  }, 'image/jpeg', 0.95);
+}
+
+function createMinimalPdfFromImage(dataUrl, width, height) {
+  const base64Data = dataUrl.split(',')[1];
+  const binaryImg = atob(base64Data);
+  const imgLength = binaryImg.length;
+
+  const ptW = 842;
+  const ptH = 595;
+
+  const header = `%PDF-1.4\n`;
+  const obj1 = `1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n`;
+  const obj2 = `2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n`;
+  const obj3 = `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${ptW} ${ptH}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>\nendobj\n`;
+  
+  const obj4Head = `4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${width} /Height ${height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${imgLength} >>\nstream\n`;
+  const obj4Tail = `\nendstream\nendobj\n`;
+
+  const streamContent = `q ${ptW} 0 0 ${ptH} 0 0 cm /Im0 Do Q`;
+  const obj5 = `5 0 obj\n<< /Length ${streamContent.length} >>\nstream\n${streamContent}\nendstream\nendobj\n`;
+
+  const offset1 = header.length;
+  const offset2 = offset1 + obj1.length;
+  const offset3 = offset2 + obj2.length;
+  const offset4 = offset3 + obj3.length;
+  const offset5 = offset4 + obj4Head.length + imgLength + obj4Tail.length;
+  const xrefOffset = offset5 + obj5.length;
+
+  const pad = (n) => n.toString().padStart(10, '0');
+  const xref = `xref\n0 6\n0000000000 65535 f \n${pad(offset1)} 00000 n \n${pad(offset2)} 00000 n \n${pad(offset3)} 00000 n \n${pad(offset4)} 00000 n \n${pad(offset5)} 00000 n \n`;
+  const trailer = `trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+  const enc = new TextEncoder();
+  const part1 = enc.encode(header + obj1 + obj2 + obj3 + obj4Head);
+  const imgBytes = new Uint8Array(imgLength);
+  for (let i = 0; i < imgLength; i++) {
+    imgBytes[i] = binaryImg.charCodeAt(i);
+  }
+  const part2 = enc.encode(obj4Tail + obj5 + xref + trailer);
+
+  const totalLength = part1.length + imgBytes.length + part2.length;
+  const pdfBytes = new Uint8Array(totalLength);
+  pdfBytes.set(part1, 0);
+  pdfBytes.set(imgBytes, part1.length);
+  pdfBytes.set(part2, part1.length + imgBytes.length);
+
+  return new Blob([pdfBytes], { type: 'application/pdf' });
+}
+</script>
+</body>
+</html>
