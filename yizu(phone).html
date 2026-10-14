@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>乙组：现代文《适耕庄——稻浪渔乡之美》· 手机超清版</title>
+  <style>
+    :root {
+      --bg-body: #f4f7f2;
+      --card-bg: #ffffff;
+      --card-border: #1a2e20;
+      --text-main: #0a0a0a;
+      --accent: #2e6f40;
+      --highlight: #ffe600;
+      --highlight-ring: #d90429;
+      --dock-bg: #ffffff;
+      --font-scale: 1;
+    }
+
+    /* 黑黄极限高反差（弱视学生首选） */
+    body.theme-yellow-contrast {
+      --bg-body: #fffde0;
+      --card-bg: #ffffff;
+      --card-border: #000000;
+      --text-main: #000000;
+      --accent: #000000;
+      --highlight: #ffee00;
+      --highlight-ring: #d90429;
+      --dock-bg: #fffde0;
+    }
+
+    /* 护眼暗色模式 */
+    body.theme-dark-contrast {
+      --bg-body: #0d120f;
+      --card-bg: #162019;
+      --card-border: #f4d06f;
+      --text-main: #ffffff;
+      --accent: #3a86ff;
+      --highlight: #ffb703;
+      --highlight-ring: #ffffff;
+      --dock-bg: #162019;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: var(--bg-body);
+      color: var(--text-main);
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部导航 */
+    header.mobile-header {
+      padding-top: max(8px, env(safe-area-inset-top));
+      padding-left: 12px;
+      padding-right: 12px;
+      padding-bottom: 8px;
+      height: 52px;
+      background: var(--accent);
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      z-index: 10;
+    }
+
+    .title-area {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .m-btn {
+      background: #ffffff;
+      color: #000000;
+      border: 2px solid #000000;
+      border-radius: 18px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0 2px 0 #000000;
+      touch-action: manipulation;
+    }
+    .m-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 0 0 #000000;
+    }
+    .m-btn.active-play {
+      background: #e63946;
+      color: #ffffff;
+      animation: pulse 1s infinite alternate;
+    }
+    @keyframes pulse {
+      from { transform: scale(0.98); }
+      to { transform: scale(1.04); }
+    }
+
+    /* 滑动主舞台 */
+    .slider-stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .slide-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateX(35px);
+      transition: all 0.24s cubic-bezier(0.25, 1, 0.5, 1);
+      box-sizing: border-box;
+    }
+
+    .slide-card.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    .card-inner {
+      background: var(--card-bg);
+      border: 3px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      box-shadow: 0 4px 0 var(--card-border);
+      min-height: 0;
+    }
+
+    .card-meta-tag {
+      background: var(--bg-body);
+      border: 2px solid var(--card-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    /* 手机超大字排版（完全无卷轴适配） */
+    .para {
+      text-align: justify;
+      text-indent: 2em;
+      font-size: calc(clamp(18px, 4.6vw, 22.5px) * var(--font-scale));
+      line-height: 1.72;
+      letter-spacing: 0.2px;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    .sentence-span {
+      display: inline;
+      border-radius: 4px;
+      padding: 1px 2px;
+      transition: background-color 0.15s;
+    }
+    .sentence-span.active-speech {
+      background-color: var(--highlight) !important;
+      color: #000000 !important;
+      outline: 2.5px solid var(--highlight-ring) !important;
+      box-shadow: 0 0 10px rgba(217, 4, 41, 0.4);
+      font-weight: 900;
+    }
+
+    /* 底部触控底座 */
+    footer.mobile-dock {
+      height: 56px;
+      padding-bottom: max(6px, env(safe-area-inset-bottom));
+      padding-left: 12px;
+      padding-right: 12px;
+      background: var(--dock-bg);
+      border-top: 2px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .dock-nav-btn {
+      flex: 1;
+      height: 40px;
+      max-width: 110px;
+      border-radius: 20px;
+      border: 2.5px solid var(--card-border);
+      background: #ffffff;
+      color: #000000;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 0 var(--card-border);
+      touch-action: manipulation;
+    }
+    .dock-nav-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 var(--card-border);
+    }
+    .dock-nav-btn:disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    .page-indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+    .page-indicator .dots {
+      display: flex;
+      gap: 5px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #c2baaf;
+      border: 1px solid var(--card-border);
+    }
+    .dot.active {
+      background: var(--accent);
+      width: 16px;
+      border-radius: 6px;
+    }
+    .page-text {
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="mobile-header">
+    <div class="title-area">
+      <span>🌾</span>
+      <span>适耕庄之美</span>
+    </div>
+    <div class="btn-group">
+      <button class="m-btn" id="btnAudio">
+        <span>🔊</span> 朗读本幕
+      </button>
+      <button class="m-btn" id="btnTheme" title="切换黑黄高对比">
+        <span>👁️</span> 配色
+      </button>
+      <button class="m-btn" id="btnFontPlus" title="调大字号">A+</button>
+      <button class="m-btn" id="btnFontMinus" title="调小字号">A-</button>
+    </div>
+  </header>
+
+  <!-- 全景 3 幕大字滑台 -->
+  <main class="slider-stage" id="sliderStage">
+
+    <!-- 第 1 幕 -->
+    <div class="slide-card active" data-page="0">
+      <div class="card-inner">
+        <div class="card-meta-tag">
+          <span>第 1 幕 · 渔村转型与稻海波澜</span>
+          <span>1 / 3 幕</span>
+        </div>
+        <div class="para">
+          <span class="sentence-span">适耕庄（Sekinchan）位于雪兰莪州北部，距离吉隆坡约一个半小时车程。</span>
+          <span class="sentence-span">这里早年曾是一个默默无闻的滨海小渔村，村民世代依靠出海捕鱼为生，生活清苦。</span>
+          <span class="sentence-span">如今，适耕庄已成功转型为闻名全国的“鱼米之乡”，成为周边城市居民周末休闲度假的热门去处。</span>
+        </div>
+        <div class="para">
+          <span class="sentence-span">“辽阔稻海”随着季节更迭变幻万千。</span>
+          <span class="sentence-span">每逢播种与收割时节，放眼望去，时而泛起碧波荡漾的绿意稻浪，时而铺满金灿灿的沉甸稻穗，展现出壮美画卷。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第 2 幕 -->
+    <div class="slide-card" data-page="1">
+      <div class="card-inner">
+        <div class="card-meta-tag">
+          <span>第 2 幕 · 稻米展馆与沙滩祈福</span>
+          <span>2 / 3 幕</span>
+        </div>
+        <div class="para">
+          <span class="sentence-span">“米乐坊稻米展馆”展示了我国机械化水稻耕作与现代碾米技术的全貌。</span>
+          <span class="sentence-span">馆内设有科普走廊与微型影院，让游客亲身体会“锄禾日当午，汗滴禾下土”的农耕辛劳，深具教育意义。</span>
+        </div>
+        <div class="para">
+          <span class="sentence-span">“热浪沙滩”风景秀丽，海风习习。</span>
+          <span class="sentence-span">沙滩上耸立着一棵挂满红绸的古老许愿树，游客常在此系上彩带祈求平安。</span>
+          <span class="sentence-span">退潮时，游客还能在滩涂上观察跳跳鱼与小招潮蟹的有趣动态。</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 第 3 幕 -->
+    <div class="slide-card" data-page="2">
+      <div class="card-inner">
+        <div class="card-meta-tag">
+          <span>第 3 幕 · 道地海鲜与心灵胜地</span>
+          <span>3 / 3 幕</span>
+        </div>
+        <div class="para">
+          <span class="sentence-span">“海口海鲜餐馆”是老饕们不可错过的美食天地。</span>
+          <span class="sentence-span">店家以生猛海鲜烹制鲨鱼粥、咸蛋大虾及啦啦煎，鲜香扑鼻。</span>
+        </div>
+        <div class="para">
+          <span class="sentence-span">适耕庄虽无大都市的喧嚣繁华，却以其独特的稻海渔乡风情、美味佳肴与淳朴民风吸引着络绎不绝的旅人，是洗涤心灵的绝佳胜地。</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="mobile-dock">
+    <button class="dock-nav-btn" id="btnPrev">◀ 上一幕</button>
+    <div class="page-indicator">
+      <div class="dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <span class="page-text" id="pageLabel">1 / 3</span>
+    </div>
+    <button class="dock-nav-btn" id="btnNext">下一幕 ▶</button>
+  </footer>
+
+  <script>
+    class MobileSekinchanReader {
+      constructor() {
+        this.synth = window.speechSynthesis;
+        this.currentPage = 0;
+        this.totalPages = 3;
+        this.cards = document.querySelectorAll('.slide-card');
+        this.dots = document.querySelectorAll('.dot');
+        this.isPlaying = false;
+        this.touchStartX = 0;
+        this.touchEndX = 0;
+
+        this.init();
+      }
+
+      init() {
+        document.getElementById('btnPrev').addEventListener('click', () => this.goToPage(this.currentPage - 1));
+        document.getElementById('btnNext').addEventListener('click', () => this.goToPage(this.currentPage + 1));
+
+        const stage = document.getElementById('sliderStage');
+        stage.addEventListener('touchstart', (e) => {
+          this.touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        stage.addEventListener('touchend', (e) => {
+          this.touchEndX = e.changedTouches[0].screenX;
+          const diff = this.touchStartX - this.touchEndX;
+          if (diff > 45) this.goToPage(this.currentPage + 1);
+          if (diff < -45) this.goToPage(this.currentPage - 1);
+        }, { passive: true });
+
+        document.querySelectorAll('.sentence-span').forEach(span => {
+          span.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.stopTTS();
+            this.speakSingle(span);
+          });
+        });
+
+        document.getElementById('btnAudio').addEventListener('click', () => {
+          if (this.isPlaying) this.stopTTS();
+          else this.speakCurrentPage();
+        });
+
+        const themes = ['', 'theme-yellow-contrast', 'theme-dark-contrast'];
+        let tIdx = 0;
+        document.getElementById('btnTheme').addEventListener('click', () => {
+          tIdx = (tIdx + 1) % themes.length;
+          document.body.className = themes[tIdx];
+        });
+
+        let fontScale = 1.0;
+        document.getElementById('btnFontPlus').addEventListener('click', () => {
+          if (fontScale < 1.2) {
+            fontScale += 0.05;
+            document.documentElement.style.setProperty('--font-scale', fontScale);
+          }
+        });
+        document.getElementById('btnFontMinus').addEventListener('click', () => {
+          if (fontScale > 0.85) {
+            fontScale -= 0.05;
+            document.documentElement.style.setProperty('--font-scale', fontScale);
+          }
+        });
+      }
+
+      goToPage(pageIdx) {
+        if (pageIdx < 0 || pageIdx >= this.totalPages) return;
+        this.stopTTS();
+        this.currentPage = pageIdx;
+
+        this.cards.forEach((c, idx) => c.classList.toggle('active', idx === this.currentPage));
+        this.dots.forEach((d, idx) => d.classList.toggle('active', idx === this.currentPage));
+
+        document.getElementById('pageLabel').innerText = `${this.currentPage + 1} / ${this.totalPages}`;
+        document.getElementById('btnPrev').disabled = (this.currentPage === 0);
+        document.getElementById('btnNext').disabled = (this.currentPage === this.totalPages - 1);
+      }
+
+      clearHighlights() {
+        document.querySelectorAll('.sentence-span').forEach(s => s.classList.remove('active-speech'));
+      }
+
+      stopTTS() {
+        if (this.synth) this.synth.cancel();
+        this.isPlaying = false;
+        this.clearHighlights();
+        const btn = document.getElementById('btnAudio');
+        btn.classList.remove('active-play');
+        btn.innerHTML = '<span>🔊</span> 朗读本幕';
+      }
+
+      speakSingle(span, onEnd = null) {
+        if (!this.synth) return;
+        this.clearHighlights();
+        span.classList.add('active-speech');
+
+        const utter = new SpeechSynthesisUtterance(span.innerText.trim());
+        utter.lang = 'zh-CN';
+        utter.rate = 0.92;
+
+        const voices = this.synth.getVoices();
+        const v = voices.find(vo => vo.lang.includes('zh'));
+        if (v) utter.voice = v;
+
+        utter.onend = () => {
+          span.classList.remove('active-speech');
+          if (onEnd) onEnd();
+        };
+        utter.onerror = () => {
+          span.classList.remove('active-speech');
+          if (onEnd) onEnd();
+        };
+
+        this.synth.speak(utter);
+      }
+
+      speakCurrentPage() {
+        const activeCard = this.cards[this.currentPage];
+        const spans = Array.from(activeCard.querySelectorAll('.sentence-span'));
+        if (!spans.length) return;
+
+        this.isPlaying = true;
+        const btn = document.getElementById('btnAudio');
+        btn.classList.add('active-play');
+        btn.innerHTML = '<span>⏹️</span> 停止';
+
+        let sIdx = 0;
+        const nextSentence = () => {
+          if (!this.isPlaying || sIdx >= spans.length) {
+            this.stopTTS();
+            return;
+          }
+          this.speakSingle(spans[sIdx], () => {
+            sIdx++;
+            setTimeout(nextSentence, 100);
+          });
+        };
+        nextSentence();
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      new MobileSekinchanReader();
+    });
+  </script>
+</body>
+</html>
