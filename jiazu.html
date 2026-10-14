@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>甲组：现代文阅读《公仪休拒鱼》· 全景高清教学画卷</title>
+  <style>
+    :root {
+      --bg-canvas: #f6f3eb;
+      --card-bg: #ffffff;
+      --card-border: #2c251e;
+      --text-main: #141210;
+      --accent-theme: #2d6a4f;
+      --accent-theme-dark: #1b4332;
+      --highlight-bg: #ffe169;
+      --highlight-outline: #e85d04;
+      --sub-label-bg: #edf6f0;
+      --sub-label-text: #1b4332;
+      --font-scale: 1;
+    }
+
+    /* 高度近视 · 极致黑黄超高对比度模式 */
+    body.theme-yellow-contrast {
+      --bg-canvas: #fffce6;
+      --card-bg: #ffffff;
+      --card-border: #000000;
+      --text-main: #000000;
+      --accent-theme: #000000;
+      --accent-theme-dark: #000000;
+      --highlight-bg: #ffea00;
+      --highlight-outline: #d90429;
+      --sub-label-bg: #000000;
+      --sub-label-text: #ffffff;
+    }
+
+    /* 高度近视 · 护眼夜视深色反转模式（缓解畏光疲劳） */
+    body.theme-dark-contrast {
+      --bg-canvas: #121316;
+      --card-bg: #1c1e24;
+      --card-border: #f0e68c;
+      --text-main: #fcfcfc;
+      --accent-theme: #40916c;
+      --accent-theme-dark: #2d6a4f;
+      --highlight-bg: #ffb703;
+      --highlight-outline: #ffffff;
+      --sub-label-bg: #343a40;
+      --sub-label-text: #ffd166;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 视口全景锁定：杜绝一切滚动条与溢出 */
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: "PingFang SC", "Microsoft YaHei", "Source Han Sans CN", system-ui, sans-serif;
+      font-weight: 600;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部紧凑控制台：高度自适应锁定 */
+    header {
+      height: clamp(48px, 6vh, 58px);
+      background: var(--accent-theme);
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 clamp(16px, 2vw, 32px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: clamp(16px, 1.25vw, 21px);
+      font-weight: 900;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-title .badge {
+      background: #ffffff;
+      color: var(--accent-theme-dark);
+      padding: 3px 12px;
+      border-radius: 30px;
+      font-size: clamp(12px, 0.9vw, 15px);
+      font-weight: 900;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1vw, 14px);
+    }
+
+    .ctrl-btn {
+      background: #ffffff;
+      color: var(--text-main);
+      border: 2px solid #000000;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: clamp(12px, 0.85vw, 15px);
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 3px 0 #000000;
+      transition: all 0.1s ease;
+      white-space: nowrap;
+    }
+    .ctrl-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 0 #000000;
+    }
+    .ctrl-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #000000;
+    }
+
+    .ctrl-btn.playing {
+      background: #e63946;
+      color: #ffffff;
+      border-color: #780000;
+      box-shadow: 0 3px 0 #780000;
+      animation: pulsePlay 1.2s infinite;
+    }
+    @keyframes pulsePlay {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    /* 主视觉工作区：左右双栏平衡对称，填满屏幕 */
+    main.viewport-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(14px, 1.8vw, 26px);
+      padding: clamp(10px, 1.4vh, 18px) clamp(16px, 2vw, 32px);
+      min-height: 0;
+      box-sizing: border-box;
+    }
+
+    /* 篇章板块卡片 */
+    .passage-column-card {
+      background: var(--card-bg);
+      border: clamp(3px, 0.28vw, 4px) solid var(--card-border);
+      border-radius: 18px;
+      padding: clamp(12px, 1.8vh, 22px) clamp(16px, 2vw, 28px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 6px 0 var(--card-border);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--sub-label-bg);
+      color: var(--sub-label-text);
+      padding: 5px 14px;
+      border-radius: 12px;
+      font-size: clamp(13px, 0.95vw, 16px);
+      font-weight: 900;
+      margin-bottom: clamp(6px, 1vh, 12px);
+      border: 2px solid var(--card-border);
+      flex-shrink: 0;
+    }
+
+    .content-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+    }
+
+    /* 高度近视特调段落样式：粗体黑字、黄金行距、视口弹性字号 */
+    .para {
+      text-align: justify;
+      text-indent: 2.2em;
+      font-size: calc(clamp(16px, 1.05vw + 0.65vh, 22px) * var(--font-scale));
+      line-height: clamp(1.65, 1.95vh, 1.92);
+      letter-spacing: 0.3px;
+      color: var(--text-main);
+      margin: 0;
+    }
+
+    /* 单句点读交互：高对比显眼色块，便于弱视/近视学生跟随视觉聚焦点 */
+    .sentence-span {
+      display: inline;
+      cursor: pointer;
+      border-radius: 5px;
+      padding: 1px 3px;
+      margin: 0 1px;
+      transition: background-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .sentence-span:hover {
+      background-color: var(--highlight-bg);
+      color: #000000 !important;
+      outline: 2px dashed var(--highlight-outline);
+    }
+    .sentence-span.active-speech {
+      background-color: var(--highlight-bg) !important;
+      color: #000000 !important;
+      outline: 3px solid var(--highlight-outline) !important;
+      box-shadow: 0 0 14px rgba(232, 93, 4, 0.6);
+      font-weight: 900;
+    }
+
+    /* 底部极简状态指示 */
+    footer.status-bar {
+      height: clamp(24px, 3vh, 30px);
+      background: #1e1915;
+      color: #d1c7bd;
+      font-size: clamp(11px, 0.75vw, 13px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 clamp(16px, 2vw, 32px);
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部控制台 -->
+  <header>
+    <div class="brand-title">
+      <span>📜</span>
+      <span>甲组：现代文篇章《公仪休拒鱼》</span>
+      <span class="badge">Google Meet 专递版</span>
+    </div>
+
+    <div class="header-controls">
+      <button class="ctrl-btn" id="btnPlayAll">
+        <span>🔊</span> 顺读全文
+      </button>
+      <button class="ctrl-btn" id="btnToggleTheme" title="切换高反差近视护眼配色">
+        <span>👁️</span> 视力配色
+      </button>
+      <button class="ctrl-btn" id="btnZoomIn" title="微增字号">A+</button>
+      <button class="ctrl-btn" id="btnZoomOut" title="微减字号">A-</button>
+      <button class="ctrl-btn" id="btnFullscreen">
+        <span>⛶</span> 全屏铺满
+      </button>
+    </div>
+  </header>
+
+  <!-- 全景主阅读区域（左右对称两栏，保证单屏全部容纳） -->
+  <main class="viewport-grid" id="passageDeck">
+    
+    <!-- 左栏：起因与拒鱼 -->
+    <section class="passage-column-card">
+      <div class="card-header-bar">
+        <span>📍 第一部分 · 客商登门献贵鱼</span>
+        <span>第 1 ~ 3 自然段</span>
+      </div>
+      <div class="content-body">
+        <div class="para">
+          <span class="sentence-span">春秋时期，鲁国宰相公仪休刚正廉明、严于律己，是天下闻名的清官。</span>
+          <span class="sentence-span">他平生没有奢华的嗜好，唯独特别嗜鱼，每逢公馆膳食，餐桌上总少不了一条清蒸草鱼。</span>
+          <span class="sentence-span">鲁国的一位富商得知此事，为了谋求私利，希望在官盐运输中得到庇护，便费尽心机，特意用重金采购了一条长达三尺、浑身泛着银光的珍罕大黄鱼，亲自用上等冰锦盛装，登门送给公仪休。</span>
+        </div>
+
+        <div class="para">
+          <span class="sentence-span">那名客商满脸堆笑地拱手说道：“久闻大人清廉自守，令人肃然起敬。”</span>
+          <span class="sentence-span">“小民今日偶得此罕见活鳞，不敢私享，特来敬献给相爷，聊表一片崇敬心意，绝无他求。”</span>
+          <span class="sentence-span">不料，公仪休连看都没看一眼，便断然摆手拒绝，态度温和而坚定。</span>
+          <span class="sentence-span">客商十分困惑，以为宰相是在做做姿态，或是嫌弃礼物微薄，便急忙解释道：“相爷不必过虑，此鱼乃小民顺路所得，绝非行贿之物，若相爷不收，岂不辜负了小民的赤诚之心？”</span>
+          <span class="sentence-span">公仪休微笑着推辞道：“正因为在下嗜鱼，所以今天决不能收下您的这条鱼。”</span>
+          <span class="sentence-span">“还请阁下速速带回，以免彼此难堪。”</span>
+          <span class="sentence-span">客商见公仪休语气决绝，自讨没趣，只得悻悻然离去。</span>
+        </div>
+
+        <div class="para">
+          <span class="sentence-span">客商走后，公仪休的胞弟站在一旁，百思不得其解，忍不住上前埋怨道：“兄长平日最喜爱吃鱼，今日难得有人主动送来如此肥美的极品，兄长不仅分文不取，反倒拒人于千里之外，这是何苦呢？”</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右栏：明理与影响 -->
+    <section class="passage-column-card">
+      <div class="card-header-bar">
+        <span>📍 第二部分 · 剖析长远清廉道</span>
+        <span>第 4 ~ 6 自然段</span>
+      </div>
+      <div class="content-body">
+        <div class="para">
+          <span class="sentence-span">公仪休语重心长地对弟弟说道：“贤弟啊，你只知其一，不知其二。”</span>
+          <span class="sentence-span">“正因为我深爱吃鱼，才决不能贪图这一时的口腹之欲。”</span>
+          <span class="sentence-span">“如今我身为鲁国宰相，朝廷按时发放丰厚的俸禄，只要我恪尽职守，天天买鱼吃也绰绰有余。”</span>
+          <span class="sentence-span">“可是，如果我今天为了贪吃而收下这条鱼，日后就难免要为他人徇私枉法。”</span>
+        </div>
+
+        <div class="para">
+          <span class="sentence-span">公仪休停顿片刻，神情严肃地继续说道：“一旦徇私枉法，国家的纲纪何在？”</span>
+          <span class="sentence-span">“届时我必将遭到罢免甚至身陷囹圄。”</span>
+          <span class="sentence-span">“到了那个地步，我不仅连一寸俸禄都拿不到，身败名裂之下，哪怕想吃一条泥鳅，难道送鱼的人还会再送给我吗？”</span>
+          <span class="sentence-span">“相反，如果我一生清廉自守，不仅宰相之位能够长久，俸禄也能源源不断，那么我这一生想吃多少鱼，就能吃多少鱼啊！”</span>
+        </div>
+
+        <div class="para">
+          <span class="sentence-span">弟弟听了兄长这番透彻的剖析，顿时醍醐灌顶，惭愧地低下了头。</span>
+          <span class="sentence-span">鲁国百姓得知公仪休拒鱼的故事后，无不交口称赞他的远见卓识与崇高节操，朝野上下也因此蔚然成风，吏治日益清明。</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 底部信息条 -->
+  <footer class="status-bar">
+    <span>💡 教学提示：单击任意单句可启动高亮点读，学生端一目了然</span>
+    <span>⚡ 全屏一览无卷轴 · 适配 Google Meet 16:9 共享投屏</span>
+  </footer>
+
+  <script>
+    class SpeechPresenter {
+      constructor() {
+        this.synth = window.speechSynthesis;
+        this.isPlayingAll = false;
+        this.sentences = Array.from(document.querySelectorAll('.sentence-span'));
+        this.currentIndex = 0;
+        this.currUtterance = null;
+      }
+
+      stop() {
+        if (this.synth) this.synth.cancel();
+        this.isPlayingAll = false;
+        this.clearHighlights();
+        const playBtn = document.getElementById('btnPlayAll');
+        playBtn.classList.remove('playing');
+        playBtn.innerHTML = '<span>🔊</span> 顺读全文';
+      }
+
+      clearHighlights() {
+        this.sentences.forEach(s => s.classList.remove('active-speech'));
+      }
+
+      speakSentence(span, onEndCallback = null) {
+        if (!this.synth) return;
+        this.synth.cancel();
+        this.clearHighlights();
+
+        span.classList.add('active-speech');
+        const text = span.innerText.trim();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-CN';
+        utter.rate = 0.95; // 适合华小教学的平稳语速
+        utter.pitch = 1.0;
+
+        const voices = this.synth.getVoices();
+        const preferredVoice = voices.find(v => 
+          v.lang.includes('zh') && (v.name.includes('Xiaoxiao') || v.name.includes('Natural') || v.name.includes('Chinese') || v.name.includes('HiuGaai'))
+        );
+        if (preferredVoice) utter.voice = preferredVoice;
+
+        utter.onend = () => {
+          if (!this.isPlayingAll) span.classList.remove('active-speech');
+          if (onEndCallback) onEndCallback();
+        };
+
+        utter.onerror = () => {
+          if (!this.isPlayingAll) span.classList.remove('active-speech');
+          if (onEndCallback) onEndCallback();
+        };
+
+        this.currUtterance = utter;
+        this.synth.speak(utter);
+      }
+
+      playAllFrom(startIndex = 0) {
+        this.stop();
+        this.isPlayingAll = true;
+        this.currentIndex = startIndex;
+        const playBtn = document.getElementById('btnPlayAll');
+        playBtn.classList.add('playing');
+        playBtn.innerHTML = '<span>⏹️</span> 停止朗读';
+
+        const readNext = () => {
+          if (!this.isPlayingAll || this.currentIndex >= this.sentences.length) {
+            this.stop();
+            return;
+          }
+          const targetSpan = this.sentences[this.currentIndex];
+          this.currentIndex++;
+          this.speakSentence(targetSpan, () => {
+            setTimeout(readNext, 120);
+          });
+        };
+
+        readNext();
+      }
+    }
+
+    const presenter = new SpeechPresenter();
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. 绑定单句点读事件
+      document.querySelectorAll('.sentence-span').forEach((span, idx) => {
+        span.setAttribute('title', '点击点读此句');
+        span.addEventListener('click', (e) => {
+          e.stopPropagation();
+          presenter.stop();
+          presenter.speakSentence(span);
+        });
+      });
+
+      // 2. 顺读全文 / 停止
+      const playAllBtn = document.getElementById('btnPlayAll');
+      playAllBtn.addEventListener('click', () => {
+        if (presenter.isPlayingAll) {
+          presenter.stop();
+        } else {
+          presenter.playAllFrom(0);
+        }
+      });
+
+      // 3. 视力配色切换（默认暖白 -> 极致黑黄高反差 -> 护眼深色）
+      const themes = ['', 'theme-yellow-contrast', 'theme-dark-contrast'];
+      let currentThemeIdx = 0;
+      document.getElementById('btnToggleTheme').addEventListener('click', () => {
+        currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+        document.body.className = themes[currentThemeIdx];
+      });
+
+      // 4. 字号微调（严格限制在防溢出范围内）
+      let fontScale = 1.0;
+      document.getElementById('btnZoomIn').addEventListener('click', () => {
+        if (fontScale < 1.15) {
+          fontScale += 0.05;
+          document.documentElement.style.setProperty('--font-scale', fontScale);
+        }
+      });
+      document.getElementById('btnZoomOut').addEventListener('click', () => {
+        if (fontScale > 0.88) {
+          fontScale -= 0.05;
+          document.documentElement.style.setProperty('--font-scale', fontScale);
+        }
+      });
+
+      // 5. Google Meet 推荐：一键真全屏无边框投屏
+      document.getElementById('btnFullscreen').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          if (document.exitFullscreen) document.exitFullscreen();
+        }
+      });
+
+      // 预加载 TTS 语音包
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = () => {
+          window.speechSynthesis.getVoices();
+        };
+      }
+    });
+  </script>
+</body>
+</html>
